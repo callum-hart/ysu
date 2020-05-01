@@ -15,6 +15,27 @@ async function* randomQuote() {
   }
 }
 
+function logStage(id, { status, payload }) {
+  console.group(`${id} %c@ ${new Date().toLocaleTimeString()}`, "color: grey;");
+  console.log(` status: %c${status}`, "color: green;");
+
+  if (payload) {
+    console.log(" payload: ", payload);
+  }
+
+  console.groupEnd();
+}
+
+function logError(id, val) {
+  console.group(`${id} %c@ ${new Date().toLocaleTimeString()}`, "color: red;");
+  console.log(
+    " error: ",
+    "Sequence yielded an object without a `status` field"
+  );
+  console.log(" received: ", val);
+  console.groupEnd();
+}
+
 function sequence(mapSequenceToProps) {
   return function (WrappedComponent) {
     return class extends React.Component {
@@ -26,17 +47,30 @@ function sequence(mapSequenceToProps) {
             return {
               ...acc,
               [sequenceId]: [
-                {}, // could set a default status?
+                { status: "@IDLE" },
                 async (...args) => {
+                  // TODO: if multiple components call the same generator within a given timeframe can the result be served from cache?
+
                   for await (const val of mapSequenceToProps[sequenceId](
                     ...args
                   )) {
-                    this.setState({
-                      [sequenceId]: [
-                        val,
-                        this.state[sequenceId][1], // points to itself
-                      ],
-                    });
+                    if (this._isMounted) {
+                      if (typeof val.status === "undefined") {
+                        logError(sequenceId, val); // if dev
+                        break;
+                      }
+
+                      logStage(sequenceId, val); // if dev
+
+                      this.setState({
+                        [sequenceId]: [
+                          val,
+                          this.state[sequenceId][1], // points to itself
+                        ],
+                      });
+                    } else {
+                      break;
+                    }
                   }
                 },
               ],
@@ -44,6 +78,15 @@ function sequence(mapSequenceToProps) {
           },
           {}
         );
+      }
+
+      componentDidMount() {
+        // Antipattern but adequate for poc.
+        this._isMounted = true;
+      }
+
+      componentWillUnmount() {
+        this._isMounted = false;
       }
 
       render() {
@@ -54,34 +97,27 @@ function sequence(mapSequenceToProps) {
 }
 
 export const MyComponent = (props) => {
-  const [{ status, payload }, dispatcher] = props.quote;
+  const [quote, getQuote] = props.quoteSequence;
 
   useEffect(() => {
-    dispatcher();
-  }, [dispatcher]);
+    getQuote();
+  }, [getQuote]);
 
-  if (status === "LOADING") {
-    return <p>Loading...</p>;
-  }
-
-  if (status === "READY") {
-    return (
-      <>
-        <q>{payload.en}</q>
-        <br />
-        <br />
-        <button onClick={dispatcher}>Get another quote</button>
-      </>
-    );
-  }
-
-  if (status === "FAILED") {
-    return <p>{payload.message}</p>;
-  }
-
-  return null;
+  return (
+    <>
+      {quote.status === "LOADING" && <p>Loading...</p>}
+      {quote.status === "READY" && (
+        <>
+          <p>{quote.payload.en}</p>
+          <button onClick={getQuote}>Get another quote</button>
+        </>
+      )}
+      {quote.status === "FAILED" && <p>{quote.payload.message}</p>}
+      <button onClick={props.unmountMe}>Unmount component</button>
+    </>
+  );
 };
 
 export default sequence({
-  quote: randomQuote,
+  quoteSequence: randomQuote,
 })(MyComponent);
