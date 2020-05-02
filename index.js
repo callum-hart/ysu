@@ -1,22 +1,16 @@
 import React, { useEffect } from "react";
 
-async function* randomQuote() {
-  yield { status: "LOADING" };
+/**
+ * Library ---
+ */
 
-  try {
-    const res = await fetch(
-      "https://programming-quotes-api.herokuapp.com/quotes/random"
-    );
-    const data = await res.json();
-
-    yield { status: "READY", payload: data };
-  } catch (error) {
-    yield { status: "FAILED", payload: error };
-  }
+// stage creator: helper for conciseness and to enforce shape of yielded object
+function stage(status, payload) {
+  return { status, payload };
 }
 
-function logStage(id, { status, payload }) {
-  console.group(`${id} %c@ ${new Date().toLocaleTimeString()}`, "color: grey;");
+function logStage(id, { status, payload }, timestamp) {
+  console.group(`${id} %c@ ${timestamp}`, "color: grey;");
   console.log(` status: %c${status}`, "color: green;");
 
   if (payload) {
@@ -26,14 +20,24 @@ function logStage(id, { status, payload }) {
   console.groupEnd();
 }
 
-function logError(id, val) {
-  console.group(`${id} %c@ ${new Date().toLocaleTimeString()}`, "color: red;");
-  console.log(
-    " error: ",
-    "Sequence yielded an object without a `status` field"
-  );
+function logError(id, val, timestamp) {
+  console.group(`${id} %c@ ${timestamp}`, "color: red;");
+  console.log(" error: ", "Sequence yielded a value without a `status` field");
   console.log(" received: ", val);
   console.groupEnd();
+}
+
+function Debugger(props) {
+  return (
+    <ul>
+      {props.history.map((stage, index) => (
+        <li key={index} onClick={() => props.timeTravel(stage.val)}>
+          {stage.val.status} @ {stage.timestamp}
+          <pre>{JSON.stringify(stage.val.payload, null, 2)}</pre>
+        </li>
+      ))}
+    </ul>
+  );
 }
 
 function sequence(mapSequenceToProps) {
@@ -42,30 +46,46 @@ function sequence(mapSequenceToProps) {
       constructor(props) {
         super(props);
 
+        this.history = [];
+
         this.state = Object.keys(mapSequenceToProps).reduce(
           (acc, sequenceId) => {
             return {
               ...acc,
               [sequenceId]: [
-                { status: "@IDLE" },
+                stage("@IDLE"),
                 async (...args) => {
-                  // TODO: if multiple components call the same generator within a given timeframe can the result be served from cache?
-
                   for await (const val of mapSequenceToProps[sequenceId](
                     ...args
                   )) {
                     if (this._isMounted) {
+                      const timestamp = new Date().toLocaleTimeString();
+
                       if (typeof val.status === "undefined") {
-                        logError(sequenceId, val); // if dev
+                        logError(sequenceId, val, timestamp); // if dev
                         break;
                       }
 
-                      logStage(sequenceId, val); // if dev
+                      logStage(sequenceId, val, timestamp); // if dev
+
+                      this.history.push({ val, timestamp }); // if dev
 
                       this.setState({
                         [sequenceId]: [
                           val,
                           this.state[sequenceId][1], // points to itself
+                          <Debugger
+                            history={this.history}
+                            timeTravel={(stage) => {
+                              this.setState({
+                                [sequenceId]: [
+                                  stage,
+                                  this.state[sequenceId][1],
+                                  this.state[sequenceId][2],
+                                ],
+                              });
+                            }}
+                          />,
                         ],
                       });
                     } else {
@@ -96,8 +116,28 @@ function sequence(mapSequenceToProps) {
   };
 }
 
+/**
+ * Usage ---
+ */
+
+async function* randomQuote() {
+  yield stage("LOADING");
+
+  try {
+    const res = await fetch(
+      "https://programming-quotes-api.herokuapp.com/quotes/random"
+    );
+
+    const data = await res.json();
+
+    yield stage("READY", data);
+  } catch (error) {
+    yield stage("FAILED", error);
+  }
+}
+
 export const MyComponent = (props) => {
-  const [quote, getQuote] = props.quoteSequence;
+  const [quote, getQuote, Debugger] = props.quoteSequence;
 
   useEffect(() => {
     getQuote();
@@ -114,6 +154,8 @@ export const MyComponent = (props) => {
       )}
       {quote.status === "FAILED" && <p>{quote.payload.message}</p>}
       <button onClick={props.unmountMe}>Unmount component</button>
+
+      {Debugger}
     </>
   );
 };
