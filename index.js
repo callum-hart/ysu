@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { Component, useEffect } from "react";
 
 /**
  * Library ---
@@ -27,13 +27,21 @@ function logError(id, val, timestamp) {
   console.groupEnd();
 }
 
-function Debugger(props) {
+function Debugger({ title, history, timeTravel }) {
+  // TODO: nice if panel was resizable / draggable
+
   return (
     <ul>
-      {props.history.map((stage, index) => (
-        <li key={index} onClick={() => props.timeTravel(stage.val)}>
-          {stage.val.status} @ {stage.timestamp}
-          <pre>{JSON.stringify(stage.val.payload, null, 2)}</pre>
+      <li><strong>{title}</strong></li>
+      {history.map(({ val, timestamp }, index) => (
+        <li key={index} onClick={() => timeTravel(val)}>
+          {val.status} @ {timestamp}
+
+          {val.payload && val.payload instanceof Error ? (
+            <pre>{val.payload.message}</pre>
+          ) : (
+            <pre>{JSON.stringify(val.payload, null, 2)}</pre>
+          )}
         </li>
       ))}
     </ul>
@@ -42,7 +50,7 @@ function Debugger(props) {
 
 function sequence(mapSequenceToProps) {
   return function (WrappedComponent) {
-    return class extends React.Component {
+    return class extends Component {
       constructor(props) {
         super(props);
 
@@ -75,6 +83,7 @@ function sequence(mapSequenceToProps) {
                           val,
                           this.state[sequenceId][1], // points to itself
                           <Debugger
+                            title={sequenceId}
                             history={this.history}
                             timeTravel={(stage) => {
                               this.setState({
