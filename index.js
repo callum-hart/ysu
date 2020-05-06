@@ -1,11 +1,11 @@
-import React, { Component, useEffect } from "react";
-
-/**
- * Library ---
- */
+function pause(delay) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, delay);
+  });
+}
 
 // stage creator: helper for conciseness and to enforce shape of yielded object
-function stage(status, payload) {
+function update(status, payload) {
   return { status, payload };
 }
 
@@ -32,11 +32,14 @@ function Debugger({ title, history, timeTravel }) {
 
   return (
     <ul>
-      <li><strong>{title}</strong></li>
+      <li>
+        <strong>{title}</strong>
+      </li>
       {history.map(({ val, timestamp }, index) => (
+        // TODO: give active item a grey background
         <li key={index} onClick={() => timeTravel(val)}>
           {val.status} @ {timestamp}
-
+          {/* TODO: handle different payload types (ie: string, number) */}
           {val.payload && val.payload instanceof Error ? (
             <pre>{val.payload.message}</pre>
           ) : (
@@ -48,7 +51,7 @@ function Debugger({ title, history, timeTravel }) {
   );
 }
 
-function sequence(mapSequenceToProps) {
+function sequence(mapSequenceToProps, ...middleware) {
   return function (WrappedComponent) {
     return class extends Component {
       constructor(props) {
@@ -61,7 +64,7 @@ function sequence(mapSequenceToProps) {
             return {
               ...acc,
               [sequenceId]: [
-                stage("@IDLE"),
+                update("@IDLE"),
                 async (...args) => {
                   for await (const val of mapSequenceToProps[sequenceId](
                     ...args
@@ -74,29 +77,39 @@ function sequence(mapSequenceToProps) {
                         break;
                       }
 
-                      logStage(sequenceId, val, timestamp); // if dev
-
                       this.history.push({ val, timestamp }); // if dev
 
-                      this.setState({
-                        [sequenceId]: [
-                          val,
-                          this.state[sequenceId][1], // points to itself
-                          <Debugger
-                            title={sequenceId}
-                            history={this.history}
-                            timeTravel={(stage) => {
-                              this.setState({
-                                [sequenceId]: [
-                                  stage,
-                                  this.state[sequenceId][1],
-                                  this.state[sequenceId][2],
-                                ],
-                              });
-                            }}
-                          />,
-                        ],
-                      });
+                      this.setState(
+                        {
+                          [sequenceId]: [
+                            val,
+                            this.state[sequenceId][1], // points to itself
+                            <Debugger
+                              title={sequenceId}
+                              history={this.history}
+                              timeTravel={(stage) => {
+                                this.setState({
+                                  [sequenceId]: [
+                                    stage,
+                                    this.state[sequenceId][1],
+                                    this.state[sequenceId][2],
+                                  ],
+                                });
+                              }}
+                            />,
+                          ],
+                        },
+                        () => {
+                          logStage(sequenceId, val, timestamp); // if dev
+
+                          middleware.forEach((fn) =>
+                            fn.call(this, {
+                              ...val,
+                              meta: { sequenceId },
+                            })
+                          );
+                        }
+                      );
                     } else {
                       break;
                     }
@@ -124,51 +137,3 @@ function sequence(mapSequenceToProps) {
     };
   };
 }
-
-/**
- * Usage ---
- */
-
-async function* randomQuote() {
-  yield stage("LOADING");
-
-  try {
-    const res = await fetch(
-      "https://programming-quotes-api.herokuapp.com/quotes/random"
-    );
-
-    const data = await res.json();
-
-    yield stage("READY", data);
-  } catch (error) {
-    yield stage("FAILED", error);
-  }
-}
-
-export const MyComponent = (props) => {
-  const [quote, getQuote, Debugger] = props.quoteSequence;
-
-  useEffect(() => {
-    getQuote();
-  }, [getQuote]);
-
-  return (
-    <>
-      {quote.status === "LOADING" && <p>Loading...</p>}
-      {quote.status === "READY" && (
-        <>
-          <p>{quote.payload.en}</p>
-          <button onClick={getQuote}>Get another quote</button>
-        </>
-      )}
-      {quote.status === "FAILED" && <p>{quote.payload.message}</p>}
-      <button onClick={props.unmountMe}>Unmount component</button>
-
-      {Debugger}
-    </>
-  );
-};
-
-export default sequence({
-  quoteSequence: randomQuote,
-})(MyComponent);

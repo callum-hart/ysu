@@ -7,7 +7,7 @@
 - keep async state outside of components
 - should be easy to test
 
-## Design Principles:
+## Design decisions:
 
 - use status enums
 - decorator approach popularised by Redux
@@ -19,7 +19,7 @@ network request:
 
 ```js
 async function* randomQuote() {
-  yield stage("LOADING");
+  yield update("LOADING");
 
   try {
     const res = await fetch(
@@ -28,9 +28,9 @@ async function* randomQuote() {
 
     const data = await res.json();
 
-    yield stage("READY", data);
+    yield update("READY", data);
   } catch (error) {
-    yield stage("FAILED", error);
+    yield update("FAILED", error);
   }
 }
 
@@ -63,23 +63,17 @@ export default sequence({
 })(MyComponent);
 ```
 
-polling:
+retry network request:
 
 ```js
-function sleep(delay) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, delay);
-  });
-}
-
 async function* randomQuote() {
-  yield stage("LOADING");
+  yield update("LOADING");
 
   for (let i = 0; i < 5; i++) {
     try {
       if (i > 0) {
-        await sleep(2000);
-        yield stage("POLLING", { attempt: i });
+        await pause(2000);
+        yield update("RETRYING", { attempt: i });
       }
 
       const res = await fetch(
@@ -88,11 +82,11 @@ async function* randomQuote() {
 
       const data = await res.json();
 
-      return yield stage("READY", data);
+      return yield update("READY", data);
     } catch (error) {}
   }
 
-  yield stage("FAILED", "Request timed out");
+  yield update("FAILED", "Request timed out");
 }
 
 export const MyComponent = (props) => {
@@ -105,7 +99,7 @@ export const MyComponent = (props) => {
   return (
     <>
       {quote.status === "LOADING" && <p>Loading...</p>}
-      {quote.status === "POLLING" && (
+      {quote.status === "RETRYING" && (
         <p>
           Still Loading...{" "}
           {quote.payload.attempt > 2 && (
@@ -136,7 +130,7 @@ user journey:
 
 ```js
 async function paymentService(payload) {
-  await sleep(2000); // simulate network request latency
+  await pause(2000); // simulate network request latency
 
   console.log(payload);
 
@@ -148,18 +142,18 @@ async function paymentService(payload) {
 
 async function* payment(command, payload) {
   if (command === "CONFIRM") {
-    yield stage("CONFIRM");
+    yield update("CONFIRM");
   } else if (command === "SUBMIT") {
-    yield stage("SUBMITTING");
+    yield update("SUBMITTING");
 
     try {
       await paymentService(payload);
-      yield stage("SUCCESS");
+      yield update("SUCCESS");
     } catch (error) {
-      yield stage("FAILED", error);
+      yield update("FAILED", error);
     }
   } else {
-    yield stage("CAPTURE");
+    yield update("CAPTURE");
   }
 }
 
@@ -218,7 +212,27 @@ export const MyComponent = (props) => {
   );
 };
 
-export default sequence({
-  paymentSequence: payment,
-})(MyComponent);
+function trackingMiddleware({ status, payload, meta }) {
+  if (status === "SUCCESS") {
+    console.log("Track successful payment", payload, meta);
+  }
+}
+
+function errorMiddleware({ status, payload, meta }) {
+  if (status === "FAILED") {
+    console.log("Log failed payment", payload.message, meta);
+  }
+}
+
+export default sequence(
+  {
+    paymentSequence: payment,
+  },
+  /**
+   * Middleware is colocated with the component, since the same sequence could
+   * have different middleware requirements depending on where it's used.
+  */
+  trackingMiddleware,
+  errorMiddleware
+)(MyComponent);
 ```
