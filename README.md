@@ -236,3 +236,193 @@ export default sequence(
   errorMiddleware
 )(MyComponent);
 ```
+
+aggregation:
+
+- component with multiple network requests
+- only update the component when all the data it needs is available
+
+```js
+async function getRandomQuote() {
+  const res = await fetch(
+    "https://programming-quotes-api.herokuapp.com/quotes/random"
+  );
+  const data = await res.json();
+
+  return data;
+}
+
+async function getRandomNumberFact() {
+  const res = await fetch("http://numbersapi.com/random/trivia");
+  const data = await res.text();
+
+  return data;
+}
+
+async function* getData() {
+  yield update("LOADING");
+
+  try {
+    const [quote, numberFact] = await Promise.all([
+      getRandomQuote(),
+      getRandomNumberFact(),
+    ]);
+
+    yield update("READY", { quote, numberFact });
+  } catch (error) {
+    yield update("FAILED", error);
+  }
+}
+
+export const MyComponent = (props) => {
+  const [data, getData, Debugger] = props.dataSequence;
+
+  useEffect(() => {
+    getData();
+  }, [getData]);
+
+  return (
+    <>
+      {data.status === "LOADING" && <p>Loading...</p>}
+      {data.status === "READY" && (
+        <>
+          <p>Quote: {data.payload.quote.en}</p>
+          <p>Number fact: {data.payload.numberFact}</p>
+          <button onClick={getData}>Get more data</button>
+        </>
+      )}
+      {data.status === "FAILED" && <p>{data.payload.message}</p>}
+      <button onClick={props.unmountMe}>Unmount component</button>
+
+      {Debugger}
+    </>
+  );
+};
+
+export default sequence({
+  dataSequence: getData,
+})(MyComponent);
+```
+
+race:
+
+- get remote data unless the request takes more than N seconds
+
+```js
+async function getRandomNumberFact() {
+  const res = await fetch("http://numbersapi.com/random/trivia");
+  const data = await res.text();
+
+  return data;
+}
+
+async function* getNumberFact() {
+  yield update("LOADING");
+
+  try {
+    // only wait for the response within 3 seconds
+    const numberFact = await Promise.race([getRandomNumberFact(), pause(3000)]);
+
+    if (numberFact) {
+      yield update("READY", { numberFact });
+    } else {
+      yield update("TIMED_OUT");
+    }
+  } catch (error) {
+    yield update("FAILED", error);
+  }
+}
+
+export const MyComponent = (props) => {
+  const [numberFact, getNumberFact, Debugger] = props.numberFactSequence;
+
+  useEffect(() => {
+    getNumberFact();
+  }, [getNumberFact]);
+
+  return (
+    <>
+      {numberFact.status === "LOADING" && <p>Loading...</p>}
+      {numberFact.status === "READY" && (
+        <>
+          <p>Number fact: {numberFact.payload.numberFact}</p>
+          <button onClick={getNumberFact}>Get another fact</button>
+        </>
+      )}
+      {numberFact.status === "TIMED_OUT" && (
+        <>
+          <p>
+            It looks like you are on a slow network. Please connect to wifi and
+            try again.
+          </p>
+          <button onClick={getNumberFact}>Try again</button>
+        </>
+      )}
+      {numberFact.status === "FAILED" && <p>{numberFact.payload.message}</p>}
+      <button onClick={props.unmountMe}>Unmount component</button>
+
+      {Debugger}
+    </>
+  );
+};
+
+export default sequence({
+  numberFactSequence: getNumberFact,
+})(MyComponent);
+```
+
+polling:
+
+```js
+function checkSession() {
+  return localStorage.token;
+}
+
+async function* polling() {
+  yield update("LOADING");
+
+  while (true) {
+    await pause(3000);
+
+    if (checkSession()) {
+      yield update("VALID");
+    } else {
+      return yield update("INVALID");
+    }
+  }
+}
+
+export const MyComponent = (props) => {
+  const [polling, startPolling, Debugger] = props.pollingSequence;
+
+  useEffect(() => {
+    startPolling();
+  }, [startPolling]);
+
+  return (
+    <>
+      {polling.status === "LOADING" && <p>Loading...</p>}
+      {polling.status === "VALID" && (
+        <>
+          <button onClick={() => localStorage.removeItem("token")}>
+            Sign out
+          </button>
+        </>
+      )}
+      {polling.status === "INVALID" && (
+        <button onClick={() => {
+          localStorage.setItem("token", "abc")
+          startPolling();
+        }}>
+          Sign in
+        </button>
+      )}
+      {Debugger}
+    </>
+  );
+};
+
+export default sequence({
+  pollingSequence: polling,
+})(MyComponent);
+```
