@@ -393,7 +393,7 @@ async function* polling() {
 }
 
 export const MyComponent = (props) => {
-  const [polling, startPolling, Debugger] = props.pollingSequence;
+  const [polling, startPolling, Debugger, suspend] = props.pollingSequence;
 
   useEffect(() => {
     startPolling();
@@ -410,13 +410,17 @@ export const MyComponent = (props) => {
         </>
       )}
       {polling.status === "INVALID" && (
-        <button onClick={() => {
-          localStorage.setItem("token", "abc")
-          startPolling();
-        }}>
+        <button
+          onClick={() => {
+            localStorage.setItem("token", "abc");
+            startPolling();
+          }}
+        >
           Sign in
         </button>
       )}
+      <button onClick={suspend}>Cancel</button>
+      <button onClick={props.unmountMe}>Unmount component</button>
       {Debugger}
     </>
   );

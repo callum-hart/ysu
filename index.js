@@ -20,6 +20,12 @@ function logStage(id, { status, payload }, timestamp) {
   console.groupEnd();
 }
 
+function logSuspended(id) {
+  console.group(id);
+  console.log(" suspended");
+  console.groupEnd();
+}
+
 function logError(id, val, timestamp) {
   console.group(`${id} %c@ ${timestamp}`, "color: red;");
   console.log(" error: ", "Sequence yielded a value without a `status` field");
@@ -66,10 +72,19 @@ function sequence(mapSequenceToProps, ...middleware) {
               [sequenceId]: [
                 update("@IDLE"),
                 async (...args) => {
+                  let isSuspended = false;
+
+                  function suspend() {
+                    isSuspended = true;
+
+                    logSuspended(sequenceId); // if dev
+                    // TODO: would be nice if Debugger logged suspended sequence
+                  }
+
                   for await (const val of mapSequenceToProps[sequenceId](
                     ...args
                   )) {
-                    if (this._isMounted) {
+                    if (this._isMounted && !isSuspended) {
                       const timestamp = new Date().toLocaleTimeString();
 
                       if (typeof val.status === "undefined") {
@@ -93,10 +108,12 @@ function sequence(mapSequenceToProps, ...middleware) {
                                     stage,
                                     this.state[sequenceId][1],
                                     this.state[sequenceId][2],
+                                    this.state[sequenceId][3],
                                   ],
                                 });
                               }}
                             />,
+                            suspend, // TODO: change postion of suspend
                           ],
                         },
                         () => {
