@@ -99,6 +99,7 @@ function sequence(mapSequenceToProps, ...middleware) {
                           [sequenceId]: [
                             val,
                             this.state[sequenceId][1], // points to itself
+                            suspend,
                             <Debugger
                               title={sequenceId}
                               history={this.history}
@@ -112,8 +113,7 @@ function sequence(mapSequenceToProps, ...middleware) {
                                   ],
                                 });
                               }}
-                            />,
-                            suspend, // TODO: change postion of suspend
+                            />
                           ],
                         },
                         () => {

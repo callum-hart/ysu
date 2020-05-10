@@ -393,11 +393,7 @@ async function* polling() {
 }
 
 export const MyComponent = (props) => {
-  const [polling, startPolling, Debugger, suspend] = props.pollingSequence;
-
-  useEffect(() => {
-    startPolling();
-  }, [startPolling]);
+  const [polling, startPolling, stopPolling, Debugger] = props.pollingSequence;
 
   return (
     <>
@@ -419,7 +415,8 @@ export const MyComponent = (props) => {
           Sign in
         </button>
       )}
-      <button onClick={suspend}>Cancel</button>
+      <button onClick={startPolling}>Start</button>
+      <button onClick={stopPolling}>Stop</button>
       <button onClick={props.unmountMe}>Unmount component</button>
       {Debugger}
     </>
