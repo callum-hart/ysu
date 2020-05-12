@@ -99,21 +99,24 @@ function sequence(mapSequenceToProps, ...middleware) {
                           [sequenceId]: [
                             val,
                             this.state[sequenceId][1], // points to itself
-                            suspend,
-                            <Debugger
-                              title={sequenceId}
-                              history={this.history}
-                              timeTravel={(stage) => {
-                                this.setState({
-                                  [sequenceId]: [
-                                    stage,
-                                    this.state[sequenceId][1],
-                                    this.state[sequenceId][2],
-                                    this.state[sequenceId][3],
-                                  ],
-                                });
-                              }}
-                            />
+                            {
+                              suspend,
+                              debug: (
+                                <Debugger
+                                  title={sequenceId}
+                                  history={this.history}
+                                  timeTravel={(stage) => {
+                                    this.setState({
+                                      [sequenceId]: [
+                                        stage,
+                                        this.state[sequenceId][1],
+                                        this.state[sequenceId][2],
+                                      ],
+                                    });
+                                  }}
+                                />
+                              ),
+                            },
                           ],
                         },
                         () => {
@@ -132,6 +135,10 @@ function sequence(mapSequenceToProps, ...middleware) {
                     }
                   }
                 },
+                {
+                  suspend: () => null,
+                  debug: null
+                }
               ],
             };
           },
