@@ -1,3 +1,5 @@
+import React, { Component, useState, useEffect } from "react";
+
 function pause(delay) {
   return new Promise((resolve) => {
     setTimeout(resolve, delay);
@@ -33,27 +35,58 @@ function logError(id, val, timestamp) {
   console.groupEnd();
 }
 
-function Debugger({ title, history, timeTravel }) {
-  // TODO: nice if panel was resizable / draggable
+function renderPayload(payload) {
+  if (payload && payload instanceof Error) {
+    return <pre className="error">{payload.message}</pre>;
+  }
+
+  if (payload && typeof payload === "function") {
+    return <pre className="function">{payload.toString()}</pre>;
+  }
 
   return (
-    <ul>
-      <li>
-        <strong>{title}</strong>
-      </li>
-      {history.map(({ val, timestamp }, index) => (
-        // TODO: give active item a grey background
-        <li key={index} onClick={() => timeTravel(val)}>
-          {val.status} @ {timestamp}
-          {/* TODO: handle different payload types (ie: string, number) */}
-          {val.payload && val.payload instanceof Error ? (
-            <pre>{val.payload.message}</pre>
-          ) : (
-            <pre>{JSON.stringify(val.payload, null, 2)}</pre>
-          )}
-        </li>
-      ))}
-    </ul>
+    <pre className={typeof payload}>{JSON.stringify(payload, null, 2)}</pre>
+  );
+}
+
+function History({ title, history, timeTravel }) {
+  const [activeIndex, setActiveIndex] = useState(null);
+
+  useEffect(() => {
+    setActiveIndex(history.length - 1);
+  }, [history.length]);
+
+  return (
+    <section
+      style={{
+        border: "2px solid",
+        resize: "both",
+        overflow: "auto",
+      }}
+    >
+      <strong>{title}</strong>
+      <ul>
+        {history.map(({ val, timestamp }, index) => (
+          <li
+            key={index}
+            style={{
+              background: activeIndex === index ? "grey" : "transparent",
+            }}
+          >
+            {val.status} @ {timestamp}
+            {renderPayload(val.payload)}
+            <button
+              onClick={() => {
+                setActiveIndex(index);
+                timeTravel(val);
+              }}
+            >
+              Jump
+            </button>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 
@@ -101,8 +134,8 @@ function sequence(mapSequenceToProps, ...middleware) {
                             this.state[sequenceId][1], // points to itself
                             {
                               suspend,
-                              debug: (
-                                <Debugger
+                              history: (
+                                <History
                                   title={sequenceId}
                                   history={this.history}
                                   timeTravel={(stage) => {
@@ -137,8 +170,8 @@ function sequence(mapSequenceToProps, ...middleware) {
                 },
                 {
                   suspend: () => null,
-                  debug: null
-                }
+                  history: null,
+                },
               ],
             };
           },
@@ -161,3 +194,5 @@ function sequence(mapSequenceToProps, ...middleware) {
     };
   };
 }
+
+export { sequence, update, pause };
