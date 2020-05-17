@@ -1,94 +1,8 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { Component } from "react";
 
-function pause(delay) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, delay);
-  });
-}
-
-// stage creator: helper for conciseness and to enforce shape of yielded object
-function update(status, payload) {
-  return { status, payload };
-}
-
-function logStage(id, { status, payload }, timestamp) {
-  console.group(`${id} %c@ ${timestamp}`, "color: grey;");
-  console.log(` status: %c${status}`, "color: green;");
-
-  if (payload) {
-    console.log(" payload: ", payload);
-  }
-
-  console.groupEnd();
-}
-
-function logSuspended(id) {
-  console.group(id);
-  console.log(" suspended");
-  console.groupEnd();
-}
-
-function logError(id, val, timestamp) {
-  console.group(`${id} %c@ ${timestamp}`, "color: red;");
-  console.log(" error: ", "Sequence yielded a value without a `status` field");
-  console.log(" received: ", val);
-  console.groupEnd();
-}
-
-function renderPayload(payload) {
-  if (payload && payload instanceof Error) {
-    return <pre className="error">{payload.message}</pre>;
-  }
-
-  if (payload && typeof payload === "function") {
-    return <pre className="function">{payload.toString()}</pre>;
-  }
-
-  return (
-    <pre className={typeof payload}>{JSON.stringify(payload, null, 2)}</pre>
-  );
-}
-
-function History({ title, history, timeTravel }) {
-  const [activeIndex, setActiveIndex] = useState(null);
-
-  useEffect(() => {
-    setActiveIndex(history.length - 1);
-  }, [history.length]);
-
-  return (
-    <section
-      style={{
-        border: "2px solid",
-        resize: "both",
-        overflow: "auto",
-      }}
-    >
-      <strong>{title}</strong>
-      <ul>
-        {history.map(({ val, timestamp }, index) => (
-          <li
-            key={index}
-            style={{
-              background: activeIndex === index ? "grey" : "transparent",
-            }}
-          >
-            {val.status} @ {timestamp}
-            {renderPayload(val.payload)}
-            <button
-              onClick={() => {
-                setActiveIndex(index);
-                timeTravel(val);
-              }}
-            >
-              Jump
-            </button>
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
-}
+import { History } from "./History";
+import { logUpdate, logSuspended, logError } from "../utils/logger";
+import { update } from "../utils/helpers";
 
 function sequence(mapSequenceToProps, ...middleware) {
   return function (WrappedComponent) {
@@ -111,7 +25,7 @@ function sequence(mapSequenceToProps, ...middleware) {
                     isSuspended = true;
 
                     logSuspended(sequenceId); // if dev
-                    // TODO: would be nice if Debugger logged suspended sequence
+                    // TODO: would be nice if History logged suspended sequence
                   }
 
                   for await (const val of mapSequenceToProps[sequenceId](
@@ -153,7 +67,7 @@ function sequence(mapSequenceToProps, ...middleware) {
                           ],
                         },
                         () => {
-                          logStage(sequenceId, val, timestamp); // if dev
+                          logUpdate(sequenceId, val, timestamp); // if dev
 
                           middleware.forEach((fn) =>
                             fn.call(this, {
@@ -195,4 +109,4 @@ function sequence(mapSequenceToProps, ...middleware) {
   };
 }
 
-export { sequence, update, pause };
+export { sequence };
