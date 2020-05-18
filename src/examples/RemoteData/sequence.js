@@ -1,12 +1,12 @@
 import { update } from "../../lib";
 
-import { getRandomQuote } from "./service";
+import { getProgrammingQuote } from "./service";
 
-async function* randomQuoteSequence() {
+async function* programmingQuoteSequence() {
   yield update("LOADING");
 
   try {
-    const quote = await getRandomQuote();
+    const quote = await getProgrammingQuote();
 
     yield update("READY", quote);
   } catch (error) {
@@ -14,4 +14,4 @@ async function* randomQuoteSequence() {
   }
 }
 
-export { randomQuoteSequence };
+export { programmingQuoteSequence };

@@ -1,4 +1,4 @@
-async function getRandomQuote() {
+async function getProgrammingQuote() {
   const res = await fetch(
     "https://programming-quotes-api.herokuapp.com/quotes/random"
   );
@@ -6,4 +6,4 @@ async function getRandomQuote() {
   return res.json();
 }
 
-export { getRandomQuote };
+export { getProgrammingQuote };

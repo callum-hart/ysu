@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
 import { sequence } from "../../lib";
 
-import { randomQuoteSequence } from "./sequence";
+import { programmingQuoteSequence } from "./sequence";
 
-export const RandomQuote = (props) => {
-  const [quote, getQuote, { history }] = props.randomQuote;
+// TODO: add image from here https://unsplash.com/photos/qjnAnF0jIGk
+export const ProgrammingQuote = (props) => {
+  const [quote, getQuote, { history }] = props.programmingQuote;
 
   useEffect(() => {
     getQuote();
@@ -27,5 +28,5 @@ export const RandomQuote = (props) => {
 };
 
 export default sequence({
-  randomQuote: randomQuoteSequence,
-})(RandomQuote);
+  programmingQuote: programmingQuoteSequence,
+})(ProgrammingQuote);
