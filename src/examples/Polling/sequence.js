@@ -9,7 +9,7 @@ async function* issLocationSequence(delay = 5000) {
     try {
       const location = await getIssLocation();
 
-      yield update("READY", location);
+      yield update("RECEIVED", location);
     } catch (error) {
       return yield update("FAILED", error);
     }

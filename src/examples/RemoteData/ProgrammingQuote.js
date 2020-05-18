@@ -5,7 +5,7 @@ import { programmingQuoteSequence } from "./sequence";
 
 // TODO: add image from here https://unsplash.com/photos/qjnAnF0jIGk
 export const ProgrammingQuote = (props) => {
-  const [quote, getQuote, { history }] = props.programmingQuote;
+  const [{ status, payload }, getQuote, { history }] = props.programmingQuote;
 
   useEffect(() => {
     getQuote();
@@ -13,14 +13,14 @@ export const ProgrammingQuote = (props) => {
 
   return (
     <>
-      {quote.status === "LOADING" && <p>Loading...</p>}
-      {quote.status === "READY" && (
+      {status === "LOADING" && <p>Loading...</p>}
+      {status === "READY" && (
         <>
-          <p>{quote.payload.en}</p>
+          <p>{payload.en}</p>
           <button onClick={getQuote}>Get another quote</button>
         </>
       )}
-      {quote.status === "FAILED" && <p>{quote.payload.message}</p>}
+      {status === "FAILED" && <p>{payload.message}</p>}
 
       {history}
     </>
