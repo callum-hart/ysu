@@ -1,0 +1,31 @@
+.history {
+  border: 2px solid;
+  overflow: auto;
+  resize: both;
+}
+
+.history__title {
+  padding: 0 15px;
+}
+
+.history__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.stage {
+  border-bottom: 1px solid;
+  padding: 0 15px;
+}
+
+.stage--active {
+  background: antiquewhite;
+}
+
+.stage__header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 0 10px;
+}

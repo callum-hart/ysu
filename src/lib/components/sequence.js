@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import { History } from "./History";
+import { History } from "./History/History";
 import { logUpdate, logSuspended, logError } from "../utils/logger";
 import { update } from "../utils/helpers";
 
