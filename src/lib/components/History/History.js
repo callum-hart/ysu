@@ -9,28 +9,39 @@ function renderPayload(payload) {
   }
 
   if (payload instanceof Error) {
-    return <pre className="error">{payload.message}</pre>;
+    return (
+      <pre className={cx(styles.payload, styles["payload--error"])}>
+        {payload.message}
+      </pre>
+    );
   }
 
   if (typeof payload === "function") {
-    return <pre className="function">{payload.toString()}</pre>;
+    return (
+      <pre className={cx(styles.payload, styles["payload--function"])}>
+        {payload.toString()}
+      </pre>
+    );
   }
 
   return (
-    <pre className={typeof payload}>{JSON.stringify(payload, null, 2)}</pre>
+    <pre className={cx(styles.payload, styles[`payload--${typeof payload}`])}>
+      {JSON.stringify(payload, null, 2)}
+    </pre>
   );
 }
 
-function History({ title, history, timeTravel }) {
+function History({ sequenceId, history, timeTravel }) {
   const [activeIndex, setActiveIndex] = useState(null);
+  const theme = "dark"; // TODO: add toggle to change theme
 
   useEffect(() => {
     setActiveIndex(history.length - 1);
   }, [history.length]);
 
   return (
-    <section className={styles.history}>
-      <p className={styles.history__title}>{title}</p>
+    <section className={cx(styles.history, styles[`history--${theme}`])}>
+      <p className={styles.history__title}>{sequenceId}</p>
       <ul className={styles.history__list}>
         {history.map(({ val, timestamp }, index) => (
           <li
@@ -40,17 +51,18 @@ function History({ title, history, timeTravel }) {
             })}
           >
             <div className={styles.stage__header}>
-              {val.status} @ {timestamp}
-              {activeIndex !== index && (
-                <button
-                  onClick={() => {
-                    setActiveIndex(index);
-                    timeTravel(val);
-                  }}
-                >
-                  Jump
-                </button>
-              )}
+              <span className={styles.stage__status}>{val.status}</span>
+              <span className={styles.stage__timestamp}>{timestamp}</span>
+              <button
+                className={styles.stage__button}
+                disabled={activeIndex === index}
+                onClick={() => {
+                  setActiveIndex(index);
+                  timeTravel(val);
+                }}
+              >
+                View
+              </button>
             </div>
             {renderPayload(val.payload)}
           </li>

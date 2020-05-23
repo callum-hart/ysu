@@ -50,7 +50,7 @@ function sequence(mapSequenceToProps, ...middleware) {
                               suspend,
                               history: (
                                 <History
-                                  title={sequenceId}
+                                  sequenceId={sequenceId}
                                   history={this.history}
                                   timeTravel={(stage) => {
                                     this.setState({
