@@ -12,16 +12,16 @@
 
 .history {
   --primary-text-color: #7f8188;
-  border: 2px solid #1f2027;
-  max-width: 500px;
-  overflow: auto;
-  resize: both;
   background: var(--background);
+  border: 2px solid #1f2027;
+  max-height: 100%;
+  overflow: auto;
 }
 
 .header {
   align-items: center;
   border-bottom: 2px solid #1f2027;
+  cursor: move;
   display: flex;
   justify-content: space-between;
   padding: 8px 15px;
