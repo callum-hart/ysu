@@ -11,7 +11,8 @@
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
     "react-router-dom": "5.2.0",
-    "classnames": "2.2.6"
+    "classnames": "2.2.6",
+    "react-switch": "5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",

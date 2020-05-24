@@ -19,13 +19,31 @@
   background: var(--background);
 }
 
-.history__title {
+.header {
+  align-items: center;
   border-bottom: 2px solid #1f2027;
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 15px;
+}
+
+.header__title {
   color: var(--primary-text-color);
   font-family: monospace;
   font-size: 13px;
   margin: 0;
-  padding: 8px 15px;
+}
+
+.switch {
+  align-items: center;
+  display: flex;
+}
+
+.switch__label {
+  color: var(--primary-text-color);
+  font-family: sans-serif;
+  font-size: 12px;
+  margin-right: 6px;
 }
 
 .history__list {
@@ -75,6 +93,11 @@
   color: var(--primary-text-color);
 }
 
+.stage__button:focus {
+  box-shadow: 0 0 0 2px #a8cbf5;
+  outline: none;
+}
+
 .stage__button:disabled {
   opacity: 0.5;
 }
@@ -82,6 +105,7 @@
 .payload {
   background: #1f2027;
   border-radius: 3px;
+  font-family: monospace;
   font-size: 14px;
   margin: 0 0 15px;
   overflow: auto;
@@ -93,7 +117,7 @@
 }
 
 .payload--object {
-  color: #b378d2;
+  color: var(--primary-text-color);
 }
 
 .payload--number {

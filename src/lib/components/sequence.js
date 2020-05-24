@@ -49,6 +49,7 @@ function sequence(mapSequenceToProps, ...middleware) {
                             {
                               suspend,
                               history: (
+                                // TODO: would it be useful if you could suspend (restart) sequence from History?
                                 <History
                                   sequenceId={sequenceId}
                                   history={this.history}

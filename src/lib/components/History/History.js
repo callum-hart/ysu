@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import cx from "classnames";
+import Switch from "react-switch";
 
 import styles from "./History.module.css";
 
@@ -33,15 +34,50 @@ function renderPayload(payload) {
 
 function History({ sequenceId, history, timeTravel }) {
   const [activeIndex, setActiveIndex] = useState(null);
-  const theme = "dark"; // TODO: add toggle to change theme
+  const [theme, setTheme] = useState("dark"); // TODO: save in localStorage
+
+  function toggleTheme() {
+    if (theme === "dark") {
+      setTheme("light");
+    } else {
+      setTheme("dark");
+    }
+  }
 
   useEffect(() => {
     setActiveIndex(history.length - 1);
+    // TODO: scroll into view
   }, [history.length]);
 
   return (
     <section className={cx(styles.history, styles[`history--${theme}`])}>
-      <p className={styles.history__title}>{sequenceId}</p>
+      <div className={styles.header}>
+        <p className={styles.header__title}>{sequenceId}</p>
+        <label className={styles.switch}>
+          <>
+            {theme === "dark" && (
+              <span className={styles.switch__label}>Light</span>
+            )}
+            {theme === "light" && (
+              <span className={styles.switch__label}>Dark</span>
+            )}
+          </>
+          <Switch
+            checked={theme === "dark"}
+            onChange={toggleTheme}
+            uncheckedIcon={false}
+            checkedIcon={false}
+            height={15}
+            width={30}
+            handleDiameter={11}
+            offColor="#7f8188"
+            onColor="#7f8188"
+            offHandleColor="#cbcbcd"
+            onHandleColor="#1f2027"
+            activeBoxShadow="0 0 0 2px #a8cbf5"
+          />
+        </label>
+      </div>
       <ul className={styles.history__list}>
         {history.map(({ val, timestamp }, index) => (
           <li
