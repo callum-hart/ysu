@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import cx from "classnames";
 import { Rnd } from "react-rnd";
 import Switch from "react-switch";
@@ -36,6 +36,7 @@ function renderPayload(payload) {
 function History({ sequenceId, history, timeTravel }) {
   const [activeIndex, setActiveIndex] = useState(null);
   const [theme, setTheme] = useState("dark"); // TODO: save in localStorage
+  const scrollToRef = useRef(null);
 
   function toggleTheme() {
     if (theme === "dark") {
@@ -47,7 +48,10 @@ function History({ sequenceId, history, timeTravel }) {
 
   useEffect(() => {
     setActiveIndex(history.length - 1);
-    // TODO: scroll into view
+
+    if (scrollToRef.current) {
+      scrollToRef.current.scrollIntoView();
+    }
   }, [history.length]);
 
   return (
@@ -116,6 +120,7 @@ function History({ sequenceId, history, timeTravel }) {
             </li>
           ))}
         </ul>
+        <div ref={scrollToRef} aria-hidden="true"></div>
       </section>
     </Rnd>
   );
