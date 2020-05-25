@@ -38,11 +38,15 @@ function History({ sequenceId, history, timeTravel }) {
   const [theme, setTheme] = useState(
     localStorage.getItem("ysuTheme") || "dark"
   );
-  const position = JSON.parse(localStorage.getItem("ysuPosition")) || {
+  const position = JSON.parse(
+    localStorage.getItem(`ysuPosition-${sequenceId}`)
+  ) || {
     x: 0,
     y: 0,
   };
-  const dimension = JSON.parse(localStorage.getItem("ysuDimension")) || {
+  const dimension = JSON.parse(
+    localStorage.getItem(`ysuDimension-${sequenceId}`)
+  ) || {
     width: 300,
     height: 400,
   };
@@ -76,11 +80,14 @@ function History({ sequenceId, history, timeTravel }) {
       minHeight={300}
       dragHandleClassName="js-header"
       onDragStop={(event, { x, y }) => {
-        localStorage.setItem("ysuPosition", JSON.stringify({ x, y }));
+        localStorage.setItem(
+          `ysuPosition-${sequenceId}`,
+          JSON.stringify({ x, y })
+        );
       }}
       onResizeStop={(event, direction, { offsetWidth, offsetHeight }) => {
         localStorage.setItem(
-          "ysuDimension",
+          `ysuDimension-${sequenceId}`,
           JSON.stringify({ width: offsetWidth, height: offsetHeight })
         );
       }}
