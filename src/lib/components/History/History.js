@@ -35,14 +35,26 @@ function renderPayload(payload) {
 
 function History({ sequenceId, history, timeTravel }) {
   const [activeIndex, setActiveIndex] = useState(null);
-  const [theme, setTheme] = useState("dark"); // TODO: save in localStorage
+  const [theme, setTheme] = useState(
+    localStorage.getItem("ysuTheme") || "dark"
+  );
+  const position = JSON.parse(localStorage.getItem("ysuPosition")) || {
+    x: 0,
+    y: 0,
+  };
+  const dimension = JSON.parse(localStorage.getItem("ysuDimension")) || {
+    width: 300,
+    height: 400,
+  };
   const scrollToRef = useRef(null);
 
   function toggleTheme() {
     if (theme === "dark") {
       setTheme("light");
+      localStorage.setItem("ysuTheme", "light");
     } else {
       setTheme("dark");
+      localStorage.setItem("ysuTheme", "dark");
     }
   }
 
@@ -57,14 +69,21 @@ function History({ sequenceId, history, timeTravel }) {
   return (
     <Rnd
       default={{
-        x: 0,
-        y: 0,
-        width: 300,
-        height: 400,
+        ...position,
+        ...dimension,
       }}
       minWidth={300}
       minHeight={300}
       dragHandleClassName="js-header"
+      onDragStop={(event, { x, y }) => {
+        localStorage.setItem("ysuPosition", JSON.stringify({ x, y }));
+      }}
+      onResizeStop={(event, direction, { offsetWidth, offsetHeight }) => {
+        localStorage.setItem(
+          "ysuDimension",
+          JSON.stringify({ width: offsetWidth, height: offsetHeight })
+        );
+      }}
     >
       <section className={cx(styles.history, styles[`history--${theme}`])}>
         <div className={cx(styles.header, "js-header")}>
