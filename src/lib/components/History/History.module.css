@@ -1,12 +1,10 @@
 .history--light {
   --background: #e6e6e7;
-  --active-background: #cbcbcd;
   --separator: #adaeaf;
 }
 
 .history--dark {
   --background: #37383e;
-  --active-background: #47484e;
   --separator: #2a2b33;
 }
 
@@ -62,7 +60,8 @@
 }
 
 .stage--active {
-  background: var(--active-background);
+  background: #bedfe8;
+  box-shadow: 4px 0px inset #40b4d2;
 }
 
 .stage__header {
@@ -99,7 +98,7 @@
 }
 
 .stage__button:disabled {
-  opacity: 0.5;
+  opacity: 0.75;
 }
 
 .payload {
