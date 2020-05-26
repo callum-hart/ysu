@@ -1,11 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { sequence } from "../../lib";
 
 import { issLocationSequence } from "./sequence";
 
 // TODO: add image from here https://unsplash.com/s/photos/international-space-station
 export const InternationalSpaceStation = (props) => {
-  const [{ status, payload }, getLocation, { history, suspend }] = props.issLocation;
+  const [
+    { status, payload },
+    getLocation,
+    { history, suspend },
+  ] = props.issLocation;
+  const [frequency, setFrequency] = useState(5000);
 
   useEffect(() => {
     getLocation();
@@ -23,7 +28,23 @@ export const InternationalSpaceStation = (props) => {
       )}
       {status === "FAILED" && <p>{payload.message}</p>}
       <button onClick={suspend}>Stop</button>
-      {/* TODO: add slider that controls time between polls */}
+      <br />
+      <label htmlFor="frequency">
+        Poll frequency ({frequency} milliseconds)
+      </label>
+      <input
+        id="frequency"
+        type="range"
+        min="1000"
+        max="5000"
+        step="1000"
+        value={frequency}
+        onChange={(event) => {
+          suspend();
+          setFrequency(event.target.value);
+          getLocation(event.target.value);
+        }}
+      ></input>
 
       {history}
     </>
