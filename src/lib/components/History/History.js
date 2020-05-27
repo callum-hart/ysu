@@ -51,6 +51,10 @@ function History({ sequenceId, history, timeTravel }) {
     height: 400,
   };
   const scrollToRef = useRef(null);
+  const historyRefs = history.reduce((acc, value, index) => {
+    acc[index] = React.createRef();
+    return acc;
+  }, []);
 
   function toggleTheme() {
     if (theme === "dark") {
@@ -59,6 +63,28 @@ function History({ sequenceId, history, timeTravel }) {
     } else {
       setTheme("dark");
       localStorage.setItem("ysuTheme", "dark");
+    }
+  }
+
+  function handleNewActiveIndex(newActiveIndex) {
+    setActiveIndex(newActiveIndex);
+    timeTravel(history[newActiveIndex].val);
+    historyRefs[newActiveIndex].current.scrollIntoView();
+  }
+
+  function goBack() {
+    const newActiveIndex = activeIndex - 1;
+
+    if (newActiveIndex > -1) {
+      handleNewActiveIndex(newActiveIndex);
+    }
+  }
+
+  function goForward() {
+    const newActiveIndex = activeIndex + 1;
+
+    if (newActiveIndex < history.length) {
+      handleNewActiveIndex(newActiveIndex);
     }
   }
 
@@ -124,6 +150,7 @@ function History({ sequenceId, history, timeTravel }) {
           {history.map(({ val, timestamp }, index) => (
             <li
               key={index}
+              ref={historyRefs[index]}
               className={cx(styles.stage, {
                 [styles["stage--active"]]: activeIndex === index,
               })}
@@ -148,6 +175,17 @@ function History({ sequenceId, history, timeTravel }) {
         </ul>
         <div ref={scrollToRef} aria-hidden="true"></div>
       </section>
+      <>
+        <button disabled={activeIndex === 0} onClick={goBack}>
+          Back
+        </button>
+        <button
+          disabled={activeIndex === history.length - 1}
+          onClick={goForward}
+        >
+          Forward
+        </button>
+      </>
     </Rnd>
   );
 }
