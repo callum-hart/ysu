@@ -12,8 +12,9 @@
   --primary-text-color: #7f8188;
   background: var(--background);
   border: 2px solid #1f2027;
+  display: flex;
+  flex-direction: column;
   max-height: 100%;
-  overflow: auto;
 }
 
 .header {
@@ -45,8 +46,10 @@
 }
 
 .history__list {
+  flex: 1;
   list-style: none;
   margin: 0;
+  overflow: auto;
   padding: 0;
 }
 
@@ -55,7 +58,7 @@
   padding: 0 15px;
 }
 
-.stage:last-of-type {
+.stage--last {
   border-bottom-color: transparent;
 }
 
@@ -85,19 +88,19 @@
   text-transform: lowercase;
 }
 
-.stage__button {
+.button {
   background: transparent;
   border: 1px solid var(--primary-text-color);
   border-radius: 3px;
   color: var(--primary-text-color);
 }
 
-.stage__button:focus {
+.button:focus {
   box-shadow: 0 0 0 2px #a8cbf5;
   outline: none;
 }
 
-.stage__button:disabled {
+.button:disabled {
   opacity: 0.75;
 }
 
@@ -129,4 +132,16 @@
 
 .payload--error {
   color: #eb6a6c;
+}
+
+.footer {
+  align-items: center;
+  border-top: 2px solid #1f2027;
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 15px;
+}
+
+.footer .button {
+  margin-left: 10px;
 }

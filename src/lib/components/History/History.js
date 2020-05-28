@@ -153,13 +153,14 @@ function History({ sequenceId, history, timeTravel }) {
               ref={historyRefs[index]}
               className={cx(styles.stage, {
                 [styles["stage--active"]]: activeIndex === index,
+                [styles["stage--last"]]: history.length - 1 === index,
               })}
             >
               <div className={styles.stage__header}>
                 <span className={styles.stage__status}>{val.status}</span>
                 <span className={styles.stage__timestamp}>{timestamp}</span>
                 <button
-                  className={styles.stage__button}
+                  className={styles.button}
                   disabled={activeIndex === index}
                   onClick={() => {
                     setActiveIndex(index);
@@ -172,20 +173,25 @@ function History({ sequenceId, history, timeTravel }) {
               {renderPayload(val.payload)}
             </li>
           ))}
+          <li ref={scrollToRef} aria-hidden="true"></li>
         </ul>
-        <div ref={scrollToRef} aria-hidden="true"></div>
+        <div className={styles.footer}>
+          <button
+            className={styles.button}
+            disabled={activeIndex === 0}
+            onClick={goBack}
+          >
+            Back
+          </button>
+          <button
+            className={styles.button}
+            disabled={activeIndex === history.length - 1}
+            onClick={goForward}
+          >
+            Forward
+          </button>
+        </div>
       </section>
-      <>
-        <button disabled={activeIndex === 0} onClick={goBack}>
-          Back
-        </button>
-        <button
-          disabled={activeIndex === history.length - 1}
-          onClick={goForward}
-        >
-          Forward
-        </button>
-      </>
     </Rnd>
   );
 }
