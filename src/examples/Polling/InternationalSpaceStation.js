@@ -1,10 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { sequence } from "../../lib";
+import {
+  StructuredListWrapper,
+  StructuredListHead,
+  StructuredListRow,
+  StructuredListCell,
+  StructuredListBody,
+  StructuredListSkeleton,
+  ButtonSkeleton,
+  Button,
+  Slider,
+  InlineNotification,
+} from "carbon-components-react";
 
+import { sequence } from "../../lib";
 import { issLocationSequence } from "./sequence";
 
-// TODO: add image from here https://unsplash.com/s/photos/international-space-station
-// https://unsplash.com/photos/PQHOmT-vkgA
 export const InternationalSpaceStation = (props) => {
   const [
     { status, payload },
@@ -19,33 +29,65 @@ export const InternationalSpaceStation = (props) => {
 
   return (
     <>
-      {status === "LOADING" && <p>Loading...</p>}
-      {status === "RECEIVED" && (
-        <ul>
-          <li>Timestamp: {payload.timestamp}</li>
-          <li>Latitude: {payload.lat}</li>
-          <li>Long: {payload.long}</li>
-        </ul>
+      <h1>ISS Position</h1>
+      {status === "LOADING" && (
+        <>
+          <StructuredListSkeleton rowCount={1} />
+          <ButtonSkeleton />
+        </>
       )}
-      {status === "FAILED" && <p>{payload.message}</p>}
-      <button onClick={suspend}>Stop</button>
-      <br />
-      <label htmlFor="frequency">
-        Poll frequency ({frequency} milliseconds)
-      </label>
-      <input
-        id="frequency"
-        type="range"
-        min="1000"
-        max="5000"
-        step="1000"
-        value={frequency}
-        onChange={(event) => {
+      {status === "RECEIVED" && (
+        <>
+          <StructuredListWrapper>
+            <StructuredListHead>
+              <StructuredListRow head>
+                <StructuredListCell head>Latitude</StructuredListCell>
+                <StructuredListCell head>Longitude</StructuredListCell>
+                <StructuredListCell head>Timestamp</StructuredListCell>
+              </StructuredListRow>
+            </StructuredListHead>
+            <StructuredListBody>
+              <StructuredListRow>
+                <StructuredListCell noWrap>{payload.lat}</StructuredListCell>
+                <StructuredListCell>{payload.long}</StructuredListCell>
+                <StructuredListCell>{payload.timestamp}</StructuredListCell>
+              </StructuredListRow>
+            </StructuredListBody>
+          </StructuredListWrapper>
+          <Button onClick={suspend}>Stop</Button>
+        </>
+      )}
+      {status === "FAILED" && (
+        <>
+          <InlineNotification
+            hideCloseButton={true}
+            kind="error"
+            title={payload.message}
+          />
+          <Button
+            onClick={() => {
+              suspend();
+              getLocation();
+            }}
+          >
+            Try again
+          </Button>
+        </>
+      )}
+      <Slider
+        hideTextInput={true}
+        id="poll-frequency"
+        labelText={`Poll frequency (${frequency / 1000} seconds)`}
+        max={5000}
+        min={1000}
+        onChange={({ value }) => {
           suspend();
-          setFrequency(event.target.value);
-          getLocation(event.target.value);
+          setFrequency(value);
+          getLocation(value);
         }}
-      ></input>
+        step={1000}
+        value={frequency}
+      />
 
       {props.showYsuHistory && <>{history}</>}
     </>
