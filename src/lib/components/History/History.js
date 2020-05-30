@@ -104,7 +104,7 @@ function History({ sequenceId, history, timeTravel }) {
       }}
       minWidth={300}
       minHeight={300}
-      dragHandleClassName="js-header"
+      dragHandleClassName="js-drag-handle"
       onDragStop={(event, { x, y }) => {
         localStorage.setItem(
           `ysuPosition-${sequenceId}`,
@@ -119,7 +119,7 @@ function History({ sequenceId, history, timeTravel }) {
       }}
     >
       <section className={cx(styles.history, styles[`history--${theme}`])}>
-        <div className={cx(styles.header, "js-header")}>
+        <div className={cx(styles.header, "js-drag-handle")}>
           <p className={styles.header__title}>{sequenceId}</p>
           <label className={styles.switch}>
             <>
@@ -175,7 +175,7 @@ function History({ sequenceId, history, timeTravel }) {
           ))}
           <li ref={scrollToRef} aria-hidden="true"></li>
         </ul>
-        <div className={styles.footer}>
+        <div className={cx(styles.footer, "js-drag-handle")}>
           <button
             className={styles.button}
             disabled={activeIndex === 0}
