@@ -6,12 +6,18 @@
 - always be ready to render / don't block rendering
 - keep async state outside of components
 - should be easy to test
+- same API for functional and class components
 
 ## Design decisions:
 
 - use status enums
 - decorator approach popularised by Redux
 - pair approach popularised by hooks
+- higher order component because:
+  - can be used by any type of component
+  - easier for unit testing
+  - enables middleware
+  - props allows things like proptypes
 
 ## Examples:
 
