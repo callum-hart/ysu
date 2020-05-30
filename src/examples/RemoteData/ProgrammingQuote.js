@@ -1,9 +1,14 @@
 import React, { useEffect } from "react";
-import { sequence } from "../../lib";
+import {
+  SkeletonText,
+  ButtonSkeleton,
+  Button,
+  InlineNotification,
+} from "carbon-components-react";
 
+import { sequence } from "../../lib";
 import { programmingQuoteSequence } from "./sequence";
 
-// TODO: add image from here https://unsplash.com/photos/qjnAnF0jIGk
 export const ProgrammingQuote = (props) => {
   const [{ status, payload }, getQuote, { history }] = props.programmingQuote;
 
@@ -13,14 +18,34 @@ export const ProgrammingQuote = (props) => {
 
   return (
     <>
-      {status === "LOADING" && <p>Loading...</p>}
-      {status === "READY" && (
+      <h1>Programming Quote</h1>
+      {status === "LOADING" && (
         <>
-          <p>{payload.en}</p>
-          <button onClick={getQuote}>Get another quote</button>
+          <SkeletonText />
+          <ButtonSkeleton />
         </>
       )}
-      {status === "FAILED" && <p>{payload.message}</p>}
+      {status === "READY" && (
+        <>
+          <blockquote
+            cite={`https://programming-quotes-api.herokuapp.com/quotes/id/${payload.id}`}
+          >
+            <p>{payload.en}</p>
+            <footer>— {payload.author}</footer>
+          </blockquote>
+          <Button onClick={getQuote}>Get another quote</Button>
+        </>
+      )}
+      {status === "FAILED" && (
+        <>
+          <InlineNotification
+            hideCloseButton={true}
+            kind="error"
+            title={payload.message}
+          />
+          <Button onClick={getQuote}>Try again</Button>
+        </>
+      )}
 
       {props.showYsuHistory && <>{history}</>}
     </>

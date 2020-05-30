@@ -10,6 +10,9 @@ import {
   SideNavItems,
   SideNavLink,
   Toggle,
+  Grid,
+  Row,
+  Column,
 } from "carbon-components-react";
 import "carbon-components/css/carbon-components.min.css";
 
@@ -67,26 +70,32 @@ function App() {
       </SideNav>
 
       <main>
-        <Switch>
-          <Route path={urls.remoteData}>
-            <ProgrammingQuote showYsuHistory={showYsuHistory} />
-          </Route>
-          <Route path={urls.polling}>
-            <InternationalSpaceStation showYsuHistory={showYsuHistory} />
-          </Route>
-          <Route path={urls.retryRequest}>
-            <PrimeNumber showYsuHistory={showYsuHistory} />
-          </Route>
-          <Route path={urls.aggregation}>
-            <LaunchCompare showYsuHistory={showYsuHistory} />
-          </Route>
-          <Route path={urls.race}>
-            <RandomPhoto showYsuHistory={showYsuHistory} />
-          </Route>
-          <Route path="/">
-            <ProgrammingQuote showYsuHistory={showYsuHistory} />
-          </Route>
-        </Switch>
+        <Grid>
+          <Row>
+            <Column>
+              <Switch>
+                <Route path={urls.remoteData}>
+                  <ProgrammingQuote showYsuHistory={showYsuHistory} />
+                </Route>
+                <Route path={urls.polling}>
+                  <InternationalSpaceStation showYsuHistory={showYsuHistory} />
+                </Route>
+                <Route path={urls.retryRequest}>
+                  <PrimeNumber showYsuHistory={showYsuHistory} />
+                </Route>
+                <Route path={urls.aggregation}>
+                  <LaunchCompare showYsuHistory={showYsuHistory} />
+                </Route>
+                <Route path={urls.race}>
+                  <RandomPhoto showYsuHistory={showYsuHistory} />
+                </Route>
+                <Route path="/">
+                  <ProgrammingQuote showYsuHistory={showYsuHistory} />
+                </Route>
+              </Switch>
+            </Column>
+          </Row>
+        </Grid>
       </main>
     </Router>
   );
