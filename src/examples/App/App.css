@@ -6,3 +6,9 @@ main {
   right: 0;
   top: 0;
 }
+
+.toggle-ysu-history {
+  bottom: 1rem;
+  left: 1rem;
+  position: absolute;
+}

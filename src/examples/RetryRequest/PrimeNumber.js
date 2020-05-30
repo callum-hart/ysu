@@ -24,7 +24,7 @@ export const PrimeNumber = (props) => {
         <p>{payload.message}</p>
       )}
 
-      {history}
+      {props.showYsuHistory && <>{history}</>}
     </>
   );
 };

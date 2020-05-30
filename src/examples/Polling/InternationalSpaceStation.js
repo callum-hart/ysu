@@ -4,6 +4,7 @@ import { sequence } from "../../lib";
 import { issLocationSequence } from "./sequence";
 
 // TODO: add image from here https://unsplash.com/s/photos/international-space-station
+// https://unsplash.com/photos/PQHOmT-vkgA
 export const InternationalSpaceStation = (props) => {
   const [
     { status, payload },
@@ -46,7 +47,7 @@ export const InternationalSpaceStation = (props) => {
         }}
       ></input>
 
-      {history}
+      {props.showYsuHistory && <>{history}</>}
     </>
   );
 };

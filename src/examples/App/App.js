@@ -1,11 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   NavLink,
 } from "react-router-dom";
-import { SideNav, SideNavItems, SideNavLink } from "carbon-components-react";
+import {
+  SideNav,
+  SideNavItems,
+  SideNavLink,
+  Toggle,
+} from "carbon-components-react";
 import "carbon-components/css/carbon-components.min.css";
 
 import "./App.css";
@@ -24,6 +29,8 @@ const urls = {
 };
 
 function App() {
+  const [showYsuHistory, toggleYsuHistory] = useState(false);
+
   return (
     <Router>
       <SideNav
@@ -49,27 +56,35 @@ function App() {
             Race
           </SideNavLink>
         </SideNavItems>
+
+        <Toggle
+          id="toggle-ysu-history"
+          className="toggle-ysu-history"
+          labelA="Show History"
+          labelB="Hide History"
+          onChange={() => toggleYsuHistory(!showYsuHistory)}
+        />
       </SideNav>
 
       <main>
         <Switch>
           <Route path={urls.remoteData}>
-            <ProgrammingQuote />
+            <ProgrammingQuote showYsuHistory={showYsuHistory} />
           </Route>
           <Route path={urls.polling}>
-            <InternationalSpaceStation />
+            <InternationalSpaceStation showYsuHistory={showYsuHistory} />
           </Route>
           <Route path={urls.retryRequest}>
-            <PrimeNumber />
+            <PrimeNumber showYsuHistory={showYsuHistory} />
           </Route>
           <Route path={urls.aggregation}>
-            <LaunchCompare />
+            <LaunchCompare showYsuHistory={showYsuHistory} />
           </Route>
           <Route path={urls.race}>
-            <RandomPhoto />
+            <RandomPhoto showYsuHistory={showYsuHistory} />
           </Route>
           <Route path="/">
-            <ProgrammingQuote />
+            <ProgrammingQuote showYsuHistory={showYsuHistory} />
           </Route>
         </Switch>
       </main>

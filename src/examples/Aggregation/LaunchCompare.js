@@ -52,7 +52,7 @@ export const LaunchCompare = (props) => {
       )}
       {status === "FAILED" && <p>{payload.message}</p>}
 
-      {history}
+      {props.showYsuHistory && <>{history}</>}
     </>
   );
 };

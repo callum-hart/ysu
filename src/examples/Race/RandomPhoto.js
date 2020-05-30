@@ -30,7 +30,7 @@ export const RandomPhoto = (props) => {
       )}
       {status === "FAILED" && <p>{payload.message}</p>}
 
-      {history}
+      {props.showYsuHistory && <>{history}</>}
     </>
   );
 };
