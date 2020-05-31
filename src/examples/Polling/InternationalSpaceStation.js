@@ -6,8 +6,11 @@ import {
   StructuredListCell,
   StructuredListBody,
   StructuredListSkeleton,
-  ButtonSkeleton,
   Button,
+  Form,
+  FormGroup,
+  RadioButtonGroup,
+  RadioButton,
   Slider,
   InlineNotification,
 } from "carbon-components-react";
@@ -22,20 +25,37 @@ export const InternationalSpaceStation = (props) => {
     { history, suspend },
   ] = props.issLocation;
   const [frequency, setFrequency] = useState(5000);
+  const [pollStatus, setPollStatus] = useState("start");
 
   useEffect(() => {
     getLocation();
   }, [getLocation]);
 
+  if (status === "FAILED") {
+    return (
+      <>
+        <h1>ISS Position</h1>
+        <InlineNotification
+          hideCloseButton={true}
+          kind="error"
+          title={payload.message}
+        />
+        <Button
+          onClick={() => {
+            suspend();
+            getLocation();
+          }}
+        >
+          Try again
+        </Button>
+      </>
+    );
+  }
+
   return (
     <>
       <h1>ISS Position</h1>
-      {status === "LOADING" && (
-        <>
-          <StructuredListSkeleton rowCount={1} />
-          <ButtonSkeleton />
-        </>
-      )}
+      {status === "LOADING" && <StructuredListSkeleton rowCount={1} />}
       {status === "RECEIVED" && (
         <>
           <StructuredListWrapper>
@@ -54,40 +74,55 @@ export const InternationalSpaceStation = (props) => {
               </StructuredListRow>
             </StructuredListBody>
           </StructuredListWrapper>
-          <Button onClick={suspend}>Stop</Button>
         </>
       )}
-      {status === "FAILED" && (
-        <>
-          <InlineNotification
-            hideCloseButton={true}
-            kind="error"
-            title={payload.message}
-          />
-          <Button
-            onClick={() => {
+
+      <Form action="#">
+        <FormGroup legendText="Polling">
+          <RadioButtonGroup
+            defaultSelected={pollStatus}
+            valueSelected={pollStatus}
+            name="poll-status"
+            onChange={(value) => {
               suspend();
-              getLocation();
+
+              if (value === "start") {
+                getLocation(frequency);
+              }
+
+              setPollStatus(value);
             }}
           >
-            Try again
-          </Button>
-        </>
-      )}
-      <Slider
-        hideTextInput={true}
-        id="poll-frequency"
-        labelText={`Poll frequency (${frequency / 1000} seconds)`}
-        max={5000}
-        min={1000}
-        onChange={({ value }) => {
-          suspend();
-          setFrequency(value);
-          getLocation(value);
-        }}
-        step={1000}
-        value={frequency}
-      />
+            <RadioButton
+              id="start-polling"
+              labelText="Start"
+              value="start"
+            />
+            <RadioButton
+              id="stop-polling"
+              labelText="Stop"
+              value="stop"
+            />
+          </RadioButtonGroup>
+        </FormGroup>
+        <FormGroup>
+          <Slider
+            hideTextInput={true}
+            id="poll-frequency"
+            labelText={`Poll frequency (${frequency / 1000} seconds)`}
+            max={5000}
+            min={1000}
+            onChange={({ value }) => {
+              suspend();
+              setFrequency(value);
+              setPollStatus("start");
+              getLocation(value);
+            }}
+            step={1000}
+            value={frequency}
+          />
+        </FormGroup>
+      </Form>
 
       {props.showYsuHistory && <>{history}</>}
     </>

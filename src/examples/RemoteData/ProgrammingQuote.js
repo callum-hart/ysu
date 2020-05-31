@@ -22,6 +22,7 @@ export const ProgrammingQuote = (props) => {
       {status === "LOADING" && (
         <>
           <SkeletonText />
+          <SkeletonText width="25%" />
           <ButtonSkeleton />
         </>
       )}
