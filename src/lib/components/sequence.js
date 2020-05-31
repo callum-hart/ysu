@@ -10,19 +10,23 @@ function sequence(mapSequenceToProps, ...middleware) {
       constructor(props) {
         super(props);
 
-        this.history = [
-          {
-            val: update("@IDLE"),
-            timestamp: new Date().toLocaleTimeString(),
-          },
-        ];
+        this.history = {};
 
         this.state = Object.keys(mapSequenceToProps).reduce(
           (acc, sequenceId) => {
+            const initialStatus = update("@IDLE");
+
+            this.history[sequenceId] = [
+              {
+                val: initialStatus,
+                timestamp: new Date().toLocaleTimeString(),
+              },
+            ];
+
             return {
               ...acc,
               [sequenceId]: [
-                update("@IDLE"),
+                initialStatus,
                 async (...args) => {
                   let isSuspended = false;
 
@@ -44,7 +48,7 @@ function sequence(mapSequenceToProps, ...middleware) {
                         break;
                       }
 
-                      this.history.push({ val, timestamp }); // if dev
+                      this.history[sequenceId].push({ val, timestamp }); // if dev
 
                       this.setState(
                         {
@@ -57,7 +61,7 @@ function sequence(mapSequenceToProps, ...middleware) {
                                 // TODO: would it be useful if you could suspend (restart) sequence from History?
                                 <History
                                   sequenceId={sequenceId}
-                                  history={this.history}
+                                  history={this.history[sequenceId]}
                                   timeTravel={(stage) => {
                                     this.setState({
                                       [sequenceId]: [
