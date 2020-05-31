@@ -98,6 +98,7 @@ function History({ sequenceId, history, timeTravel }) {
 
   return (
     <Rnd
+      className={styles["rnd--ysu"]}
       default={{
         ...position,
         ...dimension,
@@ -117,6 +118,7 @@ function History({ sequenceId, history, timeTravel }) {
           JSON.stringify({ width: offsetWidth, height: offsetHeight })
         );
       }}
+      aria-hidden="true"
     >
       <section className={cx(styles.history, styles[`history--${theme}`])}>
         <div className={cx(styles.header, "js-drag-handle")}>
@@ -157,7 +159,13 @@ function History({ sequenceId, history, timeTravel }) {
               })}
             >
               <div className={styles.stage__header}>
-                <span className={styles.stage__status}>{val.status}</span>
+                <span
+                  className={cx(styles.stage__status, {
+                    [styles["stage__status--idle"]]: val.status === "@IDLE",
+                  })}
+                >
+                  {val.status}
+                </span>
                 <span className={styles.stage__timestamp}>{timestamp}</span>
                 <button
                   className={styles.button}

@@ -1,3 +1,7 @@
+.rnd--ysu {
+  z-index: 9999;
+}
+
 .history--light {
   --background: #e6e6e7;
   --separator: #adaeaf;
@@ -78,6 +82,10 @@
   flex: 1;
   font-family: sans-serif;
   font-size: 13px;
+}
+
+.stage__status--idle {
+  font-style: italic;
 }
 
 .stage__timestamp {

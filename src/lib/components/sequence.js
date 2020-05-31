@@ -10,7 +10,12 @@ function sequence(mapSequenceToProps, ...middleware) {
       constructor(props) {
         super(props);
 
-        this.history = [];
+        this.history = [
+          {
+            val: update("@IDLE"),
+            timestamp: new Date().toLocaleTimeString(),
+          },
+        ];
 
         this.state = Object.keys(mapSequenceToProps).reduce(
           (acc, sequenceId) => {

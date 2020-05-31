@@ -63,8 +63,8 @@ function App() {
         <Toggle
           id="toggle-ysu-history"
           className="toggle-ysu-history"
-          labelA="Show History"
-          labelB="Hide History"
+          labelA="History"
+          labelB="History"
           onChange={() => toggleYsuHistory(!showYsuHistory)}
         />
       </SideNav>
