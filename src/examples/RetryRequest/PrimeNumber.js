@@ -1,9 +1,13 @@
 import React, { useEffect } from "react";
-import { sequence } from "../../lib";
+import {
+  SkeletonText,
+  Button,
+  InlineNotification,
+} from "carbon-components-react";
 
+import { sequence } from "../../lib";
 import { primeNumberSequence } from "./sequence";
 
-// TODO: add image from here https://unsplash.com/photos/djb1whucfBY
 export const PrimeNumber = (props) => {
   const [{ status, payload }, getNumber, { history }] = props.primeNumber;
 
@@ -13,15 +17,29 @@ export const PrimeNumber = (props) => {
 
   return (
     <>
-      {status === "LOADING" && <p>Loading...</p>}
-      {status === "RETRYING" && <p>Retrying... {payload.attempt} / 5</p>}
+      <h1>Prime Number</h1>
+      {status === "LOADING" && <SkeletonText width="50%" />}
+      {status === "NOT_FOUND" && (
+        <>
+          <p>{payload.number} is NOT a prime number</p>
+          <p>Attempt {payload.attempt} / 5</p>
+        </>
+      )}
       {status === "FOUND" && (
         <>
           <p>{payload.number} is a prime number!</p>
+          <Button onClick={getNumber}>Go again</Button>
         </>
       )}
       {(status === "FAILED" || status === "RETRIES_EXCEEDED") && (
-        <p>{payload.message}</p>
+        <>
+          <InlineNotification
+            hideCloseButton={true}
+            kind="error"
+            title={payload.message}
+          />
+          <Button onClick={getNumber}>Try again</Button>
+        </>
       )}
 
       {props.showYsuHistory && <>{history}</>}

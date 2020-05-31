@@ -16,17 +16,18 @@ async function* primeNumberSequence() {
   yield update("LOADING");
 
   for (let i = 1; i <= 5; i++) {
+    if (i > 1) {
+      await pause(3000);
+    }
+
     try {
       const number = await getRandomNumber();
 
-      if (i > 1) {
-        await pause(3000);
-        yield update("RETRYING", { attempt: i, number });
+      if (isPrimeNumber(number)) {
+        return yield update("FOUND", { attempt: i, number });
       }
 
-      if (isPrimeNumber(number)) {
-        return yield update("FOUND", { number });
-      }
+      yield update("NOT_FOUND", { attempt: i, number });
     } catch (error) {
       return yield update("FAILED", error);
     }
