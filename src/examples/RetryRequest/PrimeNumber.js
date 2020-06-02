@@ -3,6 +3,7 @@ import {
   SkeletonText,
   Button,
   InlineNotification,
+  InlineLoading,
 } from "carbon-components-react";
 
 import { sequence } from "../../lib";
@@ -22,7 +23,9 @@ export const PrimeNumber = (props) => {
       {status === "NOT_FOUND" && (
         <>
           <p>{payload.number} is NOT a prime number</p>
-          <p>Attempt {payload.attempt} / 5</p>
+          <InlineLoading
+            description={`Retrying. Attempt ${payload.attempt} of 5`}
+          />
         </>
       )}
       {status === "FOUND" && (
