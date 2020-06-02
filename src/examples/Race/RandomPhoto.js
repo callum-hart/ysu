@@ -1,6 +1,12 @@
 import React, { useEffect } from "react";
-import { sequence } from "../../lib";
+import {
+  SkeletonPlaceholder,
+  ButtonSkeleton,
+  Button,
+  InlineNotification,
+} from "carbon-components-react";
 
+import { sequence } from "../../lib";
 import { randomPhotoSequence } from "./sequence";
 
 export const RandomPhoto = (props) => {
@@ -12,23 +18,47 @@ export const RandomPhoto = (props) => {
 
   return (
     <>
-      {status === "LOADING" && <p>Loading...</p>}
+      <h1>Random Photo</h1>
+      {status === "LOADING" && (
+        <>
+          <SkeletonPlaceholder
+            style={{
+              height: "300px",
+              width: "300px",
+            }}
+          />
+          <ButtonSkeleton />
+        </>
+      )}
       {status === "READY" && (
         <>
-          <img src={payload.imageUrl} alt="" />
-          <button onClick={getPhoto}>Get another photo</button>
+          <div>
+            <img src={payload.imageUrl} alt="" />
+          </div>
+          <Button onClick={getPhoto}>Get another photo</Button>
         </>
       )}
       {status === "TIMED_OUT" && (
         <>
-          <p>
-            It looks like you are on a slow network. Please connect to wifi and
-            try again.
-          </p>
-          <button onClick={getPhoto}>Try again</button>
+          <InlineNotification
+            hideCloseButton={true}
+            kind="info"
+            title="It appears you're on a slow internet connection."
+            subtitle="Please connect to a faster network and try again."
+          />
+          <Button onClick={getPhoto}>Try again</Button>
         </>
       )}
-      {status === "FAILED" && <p>{payload.message}</p>}
+      {status === "FAILED" && (
+        <>
+          <InlineNotification
+            hideCloseButton={true}
+            kind="error"
+            title={payload.message}
+          />
+          <Button onClick={getPhoto}>Try again</Button>
+        </>
+      )}
 
       {props.showYsuHistory && <>{history}</>}
     </>
