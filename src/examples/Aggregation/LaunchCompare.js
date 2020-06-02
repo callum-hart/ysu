@@ -1,6 +1,16 @@
 import React, { useEffect } from "react";
-import { sequence } from "../../lib";
+import {
+  StructuredListWrapper,
+  StructuredListHead,
+  StructuredListRow,
+  StructuredListCell,
+  StructuredListBody,
+  StructuredListSkeleton,
+  Button,
+  InlineNotification,
+} from "carbon-components-react";
 
+import { sequence } from "../../lib";
 import { nextLaunchSequence } from "./sequence";
 
 // compare next spacex launch with next nasa launch
@@ -15,42 +25,67 @@ export const LaunchCompare = (props) => {
 
   return (
     <>
-      {status === "LOADING" && <p>Loading...</p>}
+      <h1>Next Space Launch</h1>
+      {status === "LOADING" && <StructuredListSkeleton rowCount={4} />}
       {status === "READY" && (
-        <table>
-          <caption>Next launch:</caption>
-          <thead>
-            <tr>
-              <td></td>
-              <th scope="col">SpaceX</th>
-              <th scope="col">NASA</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">Launch Date</th>
-              <td>{payload.spaceX.launchDate}</td>
-              <td>{payload.nasa.launchDate}</td>
-            </tr>
-            <tr>
-              <th scope="row">Launch Site</th>
-              <td>{payload.spaceX.launchSite}</td>
-              <td>{payload.nasa.launchSite}</td>
-            </tr>
-            <tr>
-              <th scope="row">Mission Name</th>
-              <td>{payload.spaceX.missionName}</td>
-              <td>{payload.nasa.missionName}</td>
-            </tr>
-            <tr>
-              <th scope="row">Rocket</th>
-              <td>{payload.spaceX.rocket}</td>
-              <td>{payload.nasa.rocket}</td>
-            </tr>
-          </tbody>
-        </table>
+        <StructuredListWrapper>
+          <StructuredListHead>
+            <StructuredListRow head>
+              <StructuredListCell head></StructuredListCell>
+              <StructuredListCell head>SpaceX</StructuredListCell>
+              <StructuredListCell head>NASA</StructuredListCell>
+            </StructuredListRow>
+          </StructuredListHead>
+          <StructuredListBody>
+            <StructuredListRow>
+              <StructuredListCell>
+                <strong>Launch Date</strong>
+              </StructuredListCell>
+              <StructuredListCell>
+                {payload.spaceX.launchDate}
+              </StructuredListCell>
+              <StructuredListCell>{payload.nasa.launchDate}</StructuredListCell>
+            </StructuredListRow>
+            <StructuredListRow>
+              <StructuredListCell>
+                <strong>Launch Site</strong>
+              </StructuredListCell>
+              <StructuredListCell>
+                {payload.spaceX.launchSite}
+              </StructuredListCell>
+              <StructuredListCell>{payload.nasa.launchSite}</StructuredListCell>
+            </StructuredListRow>
+            <StructuredListRow>
+              <StructuredListCell>
+                <strong>Mission Name</strong>
+              </StructuredListCell>
+              <StructuredListCell>
+                {payload.spaceX.missionName}
+              </StructuredListCell>
+              <StructuredListCell>
+                {payload.nasa.missionName}
+              </StructuredListCell>
+            </StructuredListRow>
+            <StructuredListRow>
+              <StructuredListCell>
+                <strong>Rocket</strong>
+              </StructuredListCell>
+              <StructuredListCell>{payload.spaceX.rocket}</StructuredListCell>
+              <StructuredListCell>{payload.nasa.rocket}</StructuredListCell>
+            </StructuredListRow>
+          </StructuredListBody>
+        </StructuredListWrapper>
       )}
-      {status === "FAILED" && <p>{payload.message}</p>}
+      {status === "FAILED" && (
+        <>
+          <InlineNotification
+            hideCloseButton={true}
+            kind="error"
+            title={payload.message}
+          />
+          <Button onClick={getNextLaunch}>Try again</Button>
+        </>
+      )}
 
       {props.showYsuHistory && <>{history}</>}
     </>
