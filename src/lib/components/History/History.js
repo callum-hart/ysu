@@ -168,6 +168,7 @@ function History({ sequenceId, history, timeTravel }) {
                 </span>
                 <span className={styles.stage__timestamp}>{timestamp}</span>
                 <button
+                  type="button"
                   className={styles.button}
                   disabled={activeIndex === index}
                   onClick={() => {
@@ -185,6 +186,7 @@ function History({ sequenceId, history, timeTravel }) {
         </ul>
         <div className={cx(styles.footer, "js-drag-handle")}>
           <button
+            type="button"
             className={styles.button}
             disabled={activeIndex === 0}
             onClick={goBack}
@@ -192,6 +194,7 @@ function History({ sequenceId, history, timeTravel }) {
             Back
           </button>
           <button
+            type="button"
             className={styles.button}
             disabled={activeIndex === history.length - 1}
             onClick={goForward}
