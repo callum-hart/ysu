@@ -63,6 +63,9 @@ export const StockBidder = (props) => {
         <p>
           <strong>No. of shares</strong> {units}
         </p>
+        <p>
+          <strong>Total</strong> £{price * units}
+        </p>
       </Tile>
       <div className="bx--btn-set">
         <Button
