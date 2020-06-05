@@ -10,8 +10,7 @@ async function* stockBidSequence(command, payload) {
       await pause(1000);
     }
 
-    // if 5 seconds have passed bidding window has ended
-    // if sequence is suspended within 5 seconds we never reach here
+    // if 5 seconds have passed bidding window has ended and we never reach here
     yield update("FAILED", new Error("5 second bidding window ended"));
   } else if (command === "SUBMIT") {
     yield update("SUBMITTING");
