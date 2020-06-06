@@ -24,8 +24,8 @@ export const InternationalSpaceStation = (props) => {
     getLocation,
     { history, suspend },
   ] = props.issLocation;
-  const [frequency, setFrequency] = useState(5000);
-  const [pollStatus, setPollStatus] = useState("start");
+  const [frequency, setFrequency] = useState(2000);
+  const [control, setControl] = useState("start");
 
   useEffect(() => {
     getLocation();
@@ -34,7 +34,7 @@ export const InternationalSpaceStation = (props) => {
   if (status === "FAILED") {
     return (
       <>
-        <h1>ISS Position</h1>
+        <h1>ISS Location</h1>
         <InlineNotification
           hideCloseButton={true}
           kind="error"
@@ -54,8 +54,9 @@ export const InternationalSpaceStation = (props) => {
 
   return (
     <>
-      <h1>ISS Position</h1>
+      <h1>ISS Location</h1>
       {status === "LOADING" && <StructuredListSkeleton rowCount={1} />}
+
       {status === "RECEIVED" && (
         <>
           <StructuredListWrapper>
@@ -80,8 +81,8 @@ export const InternationalSpaceStation = (props) => {
       <Form action="#">
         <FormGroup legendText="Polling">
           <RadioButtonGroup
-            defaultSelected={pollStatus}
-            valueSelected={pollStatus}
+            defaultSelected={control}
+            valueSelected={control}
             name="poll-status"
             onChange={(value) => {
               suspend();
@@ -90,7 +91,7 @@ export const InternationalSpaceStation = (props) => {
                 getLocation(frequency);
               }
 
-              setPollStatus(value);
+              setControl(value);
             }}
           >
             <RadioButton
@@ -109,13 +110,13 @@ export const InternationalSpaceStation = (props) => {
           <Slider
             hideTextInput={true}
             id="poll-frequency"
-            labelText={`Poll frequency (${frequency / 1000} seconds)`}
+            labelText={`Poll frequency (${frequency} milliseconds)`}
             max={5000}
             min={1000}
             onChange={({ value }) => {
               suspend();
               setFrequency(value);
-              setPollStatus("start");
+              setControl("start");
               getLocation(value);
             }}
             step={1000}

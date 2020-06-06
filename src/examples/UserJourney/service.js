@@ -1,6 +1,7 @@
 import { pause } from "../../lib";
 
 async function placeStockBid(payload) {
+  console.log("placeStockBid: ", payload);
   await pause(2000); // simulate network request latency
 
   return new Promise((resolve, reject) => {

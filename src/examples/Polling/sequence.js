@@ -2,7 +2,7 @@ import { update, pause } from "../../lib";
 
 import { getIssLocation } from "./service";
 
-async function* issLocationSequence(delay = 5000) {
+async function* issLocationSequence(delay = 2000) {
   yield update("LOADING");
 
   while (true) {
