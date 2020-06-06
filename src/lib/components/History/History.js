@@ -144,7 +144,7 @@ function History({ sequenceId, history, timeTravel }) {
               onColor="#7f8188"
               offHandleColor="#cbcbcd"
               onHandleColor="#1f2027"
-              activeBoxShadow="0 0 0 2px #a8cbf5"
+              tabIndex="-1"
             />
           </label>
         </div>
@@ -171,6 +171,7 @@ function History({ sequenceId, history, timeTravel }) {
                   type="button"
                   className={styles.button}
                   disabled={activeIndex === index}
+                  tabIndex="-1"
                   onClick={() => {
                     setActiveIndex(index);
                     timeTravel(val);
@@ -189,6 +190,7 @@ function History({ sequenceId, history, timeTravel }) {
             type="button"
             className={styles.button}
             disabled={activeIndex === 0}
+            tabIndex="-1"
             onClick={goBack}
           >
             Back
@@ -197,6 +199,7 @@ function History({ sequenceId, history, timeTravel }) {
             type="button"
             className={styles.button}
             disabled={activeIndex === history.length - 1}
+            tabIndex="-1"
             onClick={goForward}
           >
             Forward
