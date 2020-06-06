@@ -22,6 +22,8 @@ import InternationalSpaceStation from "../Polling/InternationalSpaceStation";
 import PrimeNumber from "../RetryRequest/PrimeNumber";
 import LaunchCompare from "../Aggregation/LaunchCompare";
 import RandomPhoto from "../Race/RandomPhoto";
+import StockBidder from "../UserJourney/StockBidder";
+import AccountSettings from "../Undo/AccountSettings";
 
 const urls = {
   remoteData: "/remote-data",
@@ -29,6 +31,8 @@ const urls = {
   retryRequest: "/retry-request",
   aggregation: "/aggregation",
   race: "/race",
+  userJourney: "/user-journey",
+  undo: "/undo"
 };
 
 function App() {
@@ -57,6 +61,12 @@ function App() {
           </SideNavLink>
           <SideNavLink element={NavLink} to={urls.race}>
             Race
+          </SideNavLink>
+          <SideNavLink element={NavLink} to={urls.userJourney}>
+            User Journey
+          </SideNavLink>
+          <SideNavLink element={NavLink} to={urls.undo}>
+            Undo
           </SideNavLink>
         </SideNavItems>
 
@@ -88,6 +98,12 @@ function App() {
                 </Route>
                 <Route path={urls.race}>
                   <RandomPhoto showYsuHistory={showYsuHistory} />
+                </Route>
+                <Route path={urls.userJourney}>
+                  <StockBidder showYsuHistory={showYsuHistory} />
+                </Route>
+                <Route path={urls.undo}>
+                  <AccountSettings showYsuHistory={showYsuHistory} />
                 </Route>
                 <Route path="/">
                   <ProgrammingQuote showYsuHistory={showYsuHistory} />

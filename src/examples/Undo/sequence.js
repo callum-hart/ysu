@@ -1,10 +1,10 @@
 import { update, pause } from "../../lib";
 
-import { doSomething } from "./service";
+import { deleteAccount } from "./service";
 
-async function* undoSequence(command, payload) {
+async function* deleteAccountSequence(command, payload) {
   if (command === "DELETE") {
-    yield update("SOFT_DELETE");
+    yield update("SOFT_DELETING");
 
     // pause for 3 seconds before deleting
     await pause(3000);
@@ -14,7 +14,7 @@ async function* undoSequence(command, payload) {
 
     // if sequence is suspended within 3 seconds we never reach here
     try {
-      await doSomething(payload);
+      await deleteAccount(payload);
 
       yield update("DELETED");
     } catch (error) {
@@ -27,4 +27,4 @@ async function* undoSequence(command, payload) {
   }
 }
 
-export { undoSequence };
+export { deleteAccountSequence };
