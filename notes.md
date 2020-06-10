@@ -49,13 +49,13 @@ export default sequence({
 })(RandomQuote);
 ```
 
-In this example the component is connected to the generator using the `sequence` higher-order component. When(ever) the generator yields an `update` the component (re)renders.
+The component is connected to the generator using the `sequence` higher-order component. When(ever) the generator yields an `update` the component (re)renders.
 
-Each key–value passed to `sequence` is mapped to a prop which contains a pair. Here the prop `randomQuote` holds the pair [quote, getQuote]. `quote` reflects the current status of the sequence, and any information associated with the status, whilst `getQuote` is a function that initiates the sequence.
+Each field passed to `sequence` is mapped to a prop which contains a pair. The prop `randomQuote` holds the pair: quote and getQuote. `quote` reflects the current status of the sequence along with any data associated with that status. `getQuote` is a function that initiates the sequence.
 
-The `randomQuote` sequence starts when the component mounts (`useEffect`) and when the user clicks the *Get another quote* button.
+The `randomQuote` sequence starts when the component mounts, or when the user clicks the *Get another quote* button.
 
-This is a fairly trivial example, however other examples with live demos are linked below.
+This is a fairly straightforward example, however other examples with live demos are linked below.
 
 ## Examples
 
@@ -66,6 +66,51 @@ This is a fairly trivial example, however other examples with live demos are lin
 - [Race]() Time constraign a request to 2 seconds so that the UI isn't blocked on slow internet connections.
 - [User Journey]() Form in which the user has 5 seconds to either confirm or cancel submission.
 - [Undo]() After submitting a form the user can change their mind by clicking undo.
+
+## Features
+
+- Debugger with time travel 🚀
+- Baked in logger
+- Middleware support
+
+## Goals
+
+- [Always be ready to render](https://overreacted.io/writing-resilient-components/#principle-2-always-be-ready-to-render) (don't block rendering)
+- Keep asynchronous state out of components
+- Same API for function and class components
+- Should be easy to test
+
+## Design Decisions
+
+*High Level*
+
+Much of what makes UI programming difficult is managing values that change over time. If we take the sterotypical async example of making an API request, the UI reflects a sequence of state changes.
+
+The state starts off **idle** → then goes to \***loading** → then finishes with \*\***success** or **failed**.
+
+\* usually triggered on component mount / form submission
+
+\*\* depending on the API response
+
+Our API request has three sequential stages with four possible statuses.
+
+Async generators (`async function*`) are very good at coordinating sequences since they can be paused, exited and resumed.
+
+This means we can do something asynchronous → yield an update to the UI → re-enter, resume where we left off → do something else → yield another update to the UI → and so forth.
+
+The API request can be represented using a sequence diagram:
+
+| Time  | Component            | Generator |
+| ----- | -------------------- | --------- |
+| ↓     | make request ------> |           |
+| ↓     |                      | <------ yield "loading" |
+| ↓     | loading...           | calls API |
+| ↓     | ✅success            | <------ yield "success" on resolve |
+| ↓     | ❌error              | <------ yield "failed" on reject |
+
+You may have noticed this sequence diagram depicts exactly what is happening in the basic example shown earlier.
+
+*Low level*
 
 ## API
 
@@ -86,4 +131,4 @@ Pure function that returns an object with the shape:
 
 ### `pause`
 
-Helper function used to pause a sequence for a given amount of time.
+Helper function that pauses a sequence for a given amount of time.
