@@ -73,9 +73,7 @@ This is a fairly straightforward example, however other examples with live demos
 - Baked in logger
 - Middleware support
 
-## Design Decisions
-
-*High Level*
+## Overview
 
 Much of what makes UI programming difficult is managing values that change over time. If we take the sterotypical async example of making an API request, the UI reflects a sequence of state changes.
 
@@ -105,19 +103,19 @@ You may have noticed this sequence diagram depicts exactly what is happening in 
 
 Since yielding from a generator triggers a (re)render in the UI – and generators can generate values forever – implementing infinite and finite sequences such as polling or retries is trivial.
 
-Polling is as simple as calling an endpoint from an [infinite loop](), whilst retrying an XHR request N times can be achieved with a [`for` loop]().
+Polling is as simple as calling an endpoint and yielding an update to the UI from within an [infinite loop](). Whilst retrying an XHR request does the same but within a [finite loop]().
 
-By using generators we can leverage language features to keep async state out of components, offer predictable rendering (1 yield equals 1 (re)render), whilst maintaining a simple mental model (components just recieve props).
+Note: on component unmount any running sequences are stopped and scheduled updates cancelled automatically. This ensures that infinite sequences (such as polling) only run when the component is mounted.
 
----
-
-*Low Level*
+## Goals / Design Decisions
 
 - Keep asynchronous state out of components
 - Don't block rendering ([always be ready to render](https://overreacted.io/writing-resilient-components/#principle-2-always-be-ready-to-render))
-- Use [status enums](https://kentcdodds.com/blog/stop-using-isloading-booleans)
-- Same API for function and class components
 - Component state over global state
+- Same API for function and class components
+- Predictable rendering (1 yield equals 1 (re)render)
+- Simple mental model (components just recieve props)
+- Use [status enums](https://kentcdodds.com/blog/stop-using-isloading-booleans)
 - Decorator approach popularised by Redux
 - Pair approach popularised by hooks
 
@@ -152,7 +150,7 @@ Each prop (such as foo) is an array containing 3 items:
     - `payload?` Any: data associated with the current status (i.e: `{ userName: "@chart" }`)
 1. `initiator` Function: that starts the sequence
 2. `goodies` Object containing:
-    - `history` Component: that renders the history of the sequence (used for development like devtools)
+    - `history` Component: that renders the history of the sequence (used for development like devtools). Note: the history is transient and destroyed when the component unmounts.
     - `suspend` Function: that stops the sequence and cancels any scheduled updates (i.e: stop polling)
 
 #### `middleware`
