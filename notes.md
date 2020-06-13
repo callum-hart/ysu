@@ -73,13 +73,6 @@ This is a fairly straightforward example, however other examples with live demos
 - Baked in logger
 - Middleware support
 
-## Goals
-
-- [Always be ready to render](https://overreacted.io/writing-resilient-components/#principle-2-always-be-ready-to-render) (don't block rendering)
-- Keep asynchronous state out of components
-- Same API for function and class components
-- Should be easy to test
-
 ## Design Decisions
 
 *High Level*
@@ -88,29 +81,45 @@ Much of what makes UI programming difficult is managing values that change over 
 
 The state starts off **idle** → then goes to \***loading** → then finishes with \*\***success** or **failed**.
 
-\* usually triggered on component mount / form submission
+\* *usually triggered on component mount / form submission*
 
-\*\* depending on the API response
+\*\* *depending on the API response*
 
 Our API request has three sequential stages with four possible statuses.
 
 Async generators (`async function*`) are very good at coordinating sequences since they can be paused, exited and resumed.
 
-This means we can do something asynchronous → yield an update to the UI → re-enter, resume where we left off → do something else → yield another update to the UI → and so forth.
+This means we can do something asynchronous → yield an update to the UI → re-enter to resume where we left off → do something else → yield another update to the UI → and so forth.
 
 The API request can be represented using a sequence diagram:
 
-| Time  | Component            | Generator |
-| ----- | -------------------- | --------- |
-| ↓     | make request ------> |           |
+| Time  | Component                 | Generator |
+| ----- | ------------------------- | --------- |
+| ↓     | initiate sequence ------> |           |
 | ↓     |                      | <------ yield "loading" |
-| ↓     | loading...           | calls API |
+| ↓     | loading...           | call API |
 | ↓     | ✅success            | <------ yield "success" on resolve |
 | ↓     | ❌error              | <------ yield "failed" on reject |
 
 You may have noticed this sequence diagram depicts exactly what is happening in the basic example shown earlier.
 
-*Low level*
+Since yielding from a generator triggers a (re)render in the UI – and generators can generate values forever – implementing infinite and finite sequences such as polling or retries is trivial.
+
+Polling is as simple as calling an endpoint from an [infinite loop](), whilst retrying an XHR request N times can be achieved with a [`for` loop]().
+
+By using generators we can leverage language features to keep async state out of components, offer predictable rendering (1 yield equals 1 (re)render), whilst maintaining a simple mental model (components just recieve props).
+
+---
+
+*Low Level*
+
+- Keep asynchronous state out of components
+- Don't block rendering ([always be ready to render](https://overreacted.io/writing-resilient-components/#principle-2-always-be-ready-to-render))
+- Use [status enums](https://kentcdodds.com/blog/stop-using-isloading-booleans)
+- Same API for function and class components
+- Component state over global state
+- Decorator approach popularised by Redux
+- Pair approach popularised by hooks
 
 ## API
 

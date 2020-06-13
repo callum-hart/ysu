@@ -16,6 +16,7 @@ async function* primeNumberSequence() {
   yield update("LOADING");
 
   for (let i = 1; i <= 5; i++) {
+    // wait 3 seconds after the first request
     if (i > 1) {
       await pause(3000);
     }
@@ -24,11 +25,13 @@ async function* primeNumberSequence() {
       const number = await getRandomNumber();
 
       if (isPrimeNumber(number)) {
+        // return stops the generator (exits the loop)
         return yield update("FOUND", { attempt: i, number });
       }
 
       yield update("NOT_FOUND", { attempt: i, number });
     } catch (error) {
+      // return stops the generator (exits the loop)
       return yield update("FAILED", error);
     }
   }
