@@ -125,19 +125,94 @@ By using generators we can leverage language features to keep async state out of
 
 ### `sequence`
 
-Higher-order component that connects a component to one or more generators.
-
-### `update`
-
-Pure function that returns an object with the shape:
+Higher-order component that connects a component to one or more generators:
 
 ```js
-{
-  status, // required, string
-  payload // optional, any
+sequence(generatorMap, middleware?)(Component)
+```
+#### `generatorMap`
+
+Object that maps generator functions to component props:
+
+```js
+sequence(
+  {
+    foo: fooSequence,
+    bar: barSequence
+  }
+)(Component);
+```
+
+In this example the `fooSequence` generator will be available under the prop `foo`.
+
+Each prop (such as foo) is an array containing 3 items:
+
+0. `value` Object containing:
+    - `status` String: the status of the sequence (i.e: `"LOADING"`)
+    - `payload?` Any: data associated with the current status (i.e: `{ userName: "@chart" }`)
+1. `initiator` Function: that starts the sequence
+2. `goodies` Object containing:
+    - `history` Component: that renders the history of the sequence (used for development like devtools)
+    - `suspend` Function: that stops the sequence and cancels any scheduled updates (i.e: stop polling)
+
+#### `middleware`
+
+One or more functions that are subscribed to the sequence. They are called whenever a generator yields an update:
+
+```js
+sequence(
+  {
+    foo: fooSequence,
+    bar: barSequence
+  },
+  trackingMiddleware,
+  errorMiddleware,
+  // as many middlewares you desire
+)(Component);
+
+function trackingMiddleware({ status, payload, meta }) {
+  if (status === "SUCCESS") {
+    // track conversion
+  }
+}
+
+function errorMiddleware({ status, payload, meta }) {
+  if (status === "FAILED") {
+    // log error
+  }
 }
 ```
 
+Each middleware function is passed an object containing:
+
+- `status` String: the status of the sequence
+- `payload?` Any: data associated with the current status
+- `meta` Object containing:
+  - `sequenceId` String: corresponds to the name of the prop (i.e: `foo` or `bar`)
+
+Note: middlewares are colocated with components since sequences could have different middleware requirements depending on where they’re used.
+
+### `update`
+
+Pure function that describes a step in a sequence:
+
+```js
+yield update(status, payload?)
+```
+
+- `status` String: the status of the sequence
+- `payload?` Any: data associated with the current status
+
+Returns an object containing `{ status, payload? }`.
+
 ### `pause`
 
-Helper function that pauses a sequence for a given amount of time.
+Helper function that pauses a sequence for a given amount of time:
+
+```js
+await pause(delay)
+```
+
+- `delay` Number: how long in milliseconds the sequence should be paused
+
+Returns a Promise.
