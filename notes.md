@@ -113,7 +113,7 @@ Note: on component unmount any running sequences are stopped and scheduled updat
 - Don't block rendering ([always be ready to render](https://overreacted.io/writing-resilient-components/#principle-2-always-be-ready-to-render))
 - Component state over global state
 - Same API for function and class components
-- Predictable rendering (1 yield equals 1 (re)render)
+- Predictable rendering (1 yield equals 1 render)
 - Simple mental model (components just recieve props)
 - Use [status enums](https://kentcdodds.com/blog/stop-using-isloading-booleans)
 - Decorator approach popularised by Redux
@@ -121,12 +121,18 @@ Note: on component unmount any running sequences are stopped and scheduled updat
 
 ## API
 
+YSU exports the following functions:
+
+```js
+import { sequence, update, pause } from "ysu";
+```
+
 ### `sequence`
 
 Higher-order component that connects a component to one or more generators:
 
 ```js
-sequence(generatorMap, middleware?)(Component)
+sequence(generatorMap, middleware?)(Component);
 ```
 #### `generatorMap`
 
@@ -141,17 +147,19 @@ sequence(
 )(Component);
 ```
 
-In this example the `fooSequence` generator will be available under the prop `foo`.
+In this example `fooSequence` will be available in the component via the prop `foo`. Each prop (such as foo and bar) is an array containing 3 items:
 
-Each prop (such as foo) is an array containing 3 items:
+```js
+const [value, initiator, goodies] = props.foo;
+```
 
 0. `value` Object containing:
     - `status` String: the status of the sequence (i.e: `"LOADING"`)
     - `payload?` Any: data associated with the current status (i.e: `{ userName: "@chart" }`)
 1. `initiator` Function: that starts the sequence
 2. `goodies` Object containing:
-    - `history` Component: that renders the history of the sequence (used for development like devtools). Note: the history is transient and destroyed when the component unmounts.
-    - `suspend` Function: that stops the sequence and cancels any scheduled updates (i.e: stop polling)
+    - `history` Component: that renders the history of the sequence (used during development like devtools). Note: the history is transient and destroyed when the component unmounts.
+    - `suspend` Function: that stops the sequence and cancels any scheduled updates (i.e: click button to stop polling)
 
 #### `middleware`
 
@@ -188,14 +196,14 @@ Each middleware function is passed an object containing:
 - `meta` Object containing:
   - `sequenceId` String: corresponds to the name of the prop (i.e: `foo` or `bar`)
 
-Note: middlewares are colocated with components since sequences could have different middleware requirements depending on where they’re used.
+Note: middleware is colocated with components since sequences could have different tracking or error logging requirements depending on where they’re used.
 
 ### `update`
 
 Pure function that describes a step in a sequence:
 
 ```js
-yield update(status, payload?)
+yield update(status, payload?);
 ```
 
 - `status` String: the status of the sequence
@@ -208,7 +216,7 @@ Returns an object containing `{ status, payload? }`.
 Helper function that pauses a sequence for a given amount of time:
 
 ```js
-await pause(delay)
+await pause(delay);
 ```
 
 - `delay` Number: how long in milliseconds the sequence should be paused
