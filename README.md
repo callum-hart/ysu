@@ -1,37 +1,23 @@
-# Revolve
+# YSU
+*Stream updates to React components from ES6 generators*
 
-## Goals:
+## Introduction
 
-- use generators to feed components a stream of updates
-- always be ready to render / don't block rendering
-- keep async state outside of components
-- should be easy to test
-- same API for functional and class components
+YSU is an experimental library to manage asynchronous state in React.
 
-## Design decisions:
+It stands for yield sequential updates, which describes the process of **streaming updates to components from generators.**
 
-- use status enums
-- decorator approach popularised by Redux
-- pair approach popularised by hooks
-- higher order component because:
-  - can be used by any type of component
-  - easier for unit testing
-  - enables middleware
-  - props allows things like proptypes
-
-## Examples:
-
-network request:
+## Basic Example
 
 ```js
-async function* randomQuote() {
+import { update, sequence } from "ysu";
+
+// sequence --
+async function* randomQuoteSequence() {
   yield update("LOADING");
 
   try {
-    const res = await fetch(
-      "https://programming-quotes-api.herokuapp.com/quotes/random"
-    );
-
+    const res = await fetch("https://programming-quotes-api.herokuapp.com/quotes/random");
     const data = await res.json();
 
     yield update("READY", data);
@@ -40,396 +26,199 @@ async function* randomQuote() {
   }
 }
 
-export const MyComponent = (props) => {
-  const [quote, getQuote, Debugger] = props.quoteSequence;
+// component --
+const RandomQuote = props => {
+  const [quote, getQuote] = props.randomQuote;
 
-  useEffect(() => {
+  useEffect(() =>
     getQuote();
   }, [getQuote]);
 
   return (
     <>
       {quote.status === "LOADING" && <p>Loading...</p>}
-      {quote.status === "READY" && (
-        <>
-          <p>{quote.payload.en}</p>
-          <button onClick={getQuote}>Get another quote</button>
-        </>
-      )}
+      {quote.status === "READY" && <p>{quote.payload.en}</p>}
       {quote.status === "FAILED" && <p>{quote.payload.message}</p>}
-      <button onClick={props.unmountMe}>Unmount component</button>
-
-      {Debugger}
+      <button onClick={getQuote}>Get another quote</button>
     </>
   );
 };
 
 export default sequence({
-  quoteSequence: randomQuote
-})(MyComponent);
+  randomQuote: randomQuoteSequence
+})(RandomQuote);
 ```
 
-retry network request:
+The component is connected to the generator using the `sequence` higher-order component. When(ever) the generator yields an `update` the component (re)renders.
+
+Each field passed to `sequence` is mapped to a prop which contains a pair. The prop `randomQuote` holds the pair: quote and getQuote. `quote` reflects the current status of the sequence along with any data associated with that status. `getQuote` is a function that initiates the sequence.
+
+The `randomQuote` sequence starts when the component mounts, or when the user clicks the *Get another quote* button.
+
+This is a fairly straightforward example, however other examples with live demos are linked below.
+
+## Examples
+
+- [Remote Data Fetching]() Similar to the basic example above.
+- [Polling]() Endpoint is polled every N seconds, where the user can change the frequency of, or pause and resume polling.
+- [Retry Request]() Retries an XHR request until a certain condition is met, or number of retries exceeds 5 attempts.
+- [Aggregation]() Render data from multiple endpoints only when all datasets are ready.
+- [Race]() Time constraign a request to 2 seconds so that the UI isn't blocked on slow internet connections.
+- [User Journey]() Form in which the user has 5 seconds to either confirm or cancel submission.
+- [Undo]() After submitting a form the user can change their mind by clicking undo.
+
+## Features
+
+- Debugger with time travel 🚀
+- Baked in logger
+- Middleware support
+
+## Overview
+
+Much of what makes UI programming difficult is managing values that change over time. If we take the sterotypical async example of making an API request, the UI reflects a sequence of state changes.
+
+The state starts off **idle** → then goes to \***loading** → then finishes with \*\***success** or **failed**.
+
+\* *usually triggered on component mount / form submission*
+
+\*\* *depending on the API response*
+
+Our API request has three sequential stages with four possible statuses.
+
+Async generators (`async function*`) are very good at coordinating sequences since they can be paused, exited and resumed.
+
+This means we can do something asynchronous → yield an update to the UI → re-enter to resume where we left off → do something else → yield another update to the UI → and so forth.
+
+The API request can be represented using a sequence diagram:
+
+| Time  | Component                 | Generator |
+| ----- | ------------------------- | --------- |
+| ↓     | initiate sequence ------> |           |
+| ↓     |                      | <------ yield "loading" |
+| ↓     | loading...           | call API |
+| ↓     | ✅success            | <------ yield "success" on resolve |
+| ↓     | ❌error              | <------ yield "failed" on reject |
+
+You may have noticed this sequence diagram depicts exactly what is happening in the basic example shown earlier.
+
+Since yielding from a generator triggers a (re)render in the UI – and generators can generate values forever – implementing infinite and finite sequences such as polling or retries is trivial.
+
+Polling is as simple as calling an endpoint and yielding an update to the UI from within an [infinite loop](). Whilst retrying an XHR request does the same but within a [finite loop]().
+
+Note: on component unmount any running sequences are stopped and scheduled updates cancelled automatically. This ensures that infinite sequences (such as polling) only run when the component is mounted.
+
+## Goals / Design Decisions
+
+- Keep asynchronous state out of components
+- Don't block rendering ([always be ready to render](https://overreacted.io/writing-resilient-components/#principle-2-always-be-ready-to-render))
+- Component state over global state
+- Same API for function and class components
+- Predictable rendering (1 yield equals 1 render)
+- Simple mental model (components just recieve props)
+- Use [status enums](https://kentcdodds.com/blog/stop-using-isloading-booleans)
+- Decorator approach popularised by Redux
+- Pair approach popularised by hooks
+
+## API
+
+YSU exports the following functions:
 
 ```js
-async function* randomQuote() {
-  yield update("LOADING");
-
-  for (let i = 0; i < 5; i++) {
-    try {
-      if (i > 0) {
-        await pause(2000);
-        yield update("RETRYING", { attempt: i });
-      }
-
-      const res = await fetch(
-        "https://programming-quotes-api.herokuapp.com/quotes/random"
-      );
-
-      const data = await res.json();
-
-      return yield update("READY", data);
-    } catch (error) {}
-  }
-
-  yield update("FAILED", "Request timed out");
-}
-
-export const MyComponent = (props) => {
-  const [quote, getQuote, Debugger] = props.quoteSequence;
-
-  useEffect(() => {
-    getQuote();
-  }, [getQuote]);
-
-  return (
-    <>
-      {quote.status === "LOADING" && <p>Loading...</p>}
-      {quote.status === "RETRYING" && (
-        <p>
-          Still Loading...{" "}
-          {quote.payload.attempt > 2 && (
-            <span>Sorry this is taking a while</span>
-          )}
-        </p>
-      )}
-      {quote.status === "READY" && (
-        <>
-          <p>{quote.payload.en}</p>
-          <button onClick={getQuote}>Get another quote</button>
-        </>
-      )}
-      {quote.status === "FAILED" && <p>{quote.payload}</p>}
-      <button onClick={props.unmountMe}>Unmount component</button>
-
-      {Debugger}
-    </>
-  );
-};
-
-export default sequence({
-  quoteSequence: randomQuote,
-})(MyComponent);
+import { sequence, update, pause } from "ysu";
 ```
 
-user journey:
+### `sequence`
+
+Higher-order component that connects a component to one or more generators:
 
 ```js
-async function paymentService(payload) {
-  await pause(2000); // simulate network request latency
+sequence(generatorMap, middleware?)(Component);
+```
+#### `generatorMap`
 
-  console.log(payload);
+Object that maps generator functions to component props:
 
-  return new Promise((resolve, reject) => {
-    resolve();
-    // reject(new Error("Something went wrong."));
-  });
-}
-
-async function* payment(command, payload) {
-  if (command === "CONFIRM") {
-    yield update("CONFIRM");
-  } else if (command === "SUBMIT") {
-    yield update("SUBMITTING");
-
-    try {
-      await paymentService(payload);
-      yield update("SUCCESS");
-    } catch (error) {
-      yield update("FAILED", error);
-    }
-  } else {
-    yield update("CAPTURE");
+```js
+sequence(
+  {
+    foo: fooSequence,
+    bar: barSequence
   }
-}
+)(Component);
+```
 
-export const MyComponent = (props) => {
-  const [payment, transition, Debugger] = props.paymentSequence;
-  const [amount, setAmount] = useState("");
-  const [card, setCard] = useState("debit");
-  const renderForm = () => (
-    <>
-      {payment.status === "FAILED" && <p>{payment.payload.message}</p>}
-      <label htmlFor="amount">Amount: </label>
-      <input
-        id="amount"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-      />
+In this example `fooSequence` will be available in the component via the prop `foo`. Each prop (such as foo and bar) is an array containing 3 items:
 
-      <label htmlFor="card">Choose card: </label>
-      <select id="card" value={card} onChange={(e) => setCard(e.target.value)}>
-        <option value="debit">Debit card</option>
-        <option value="credit">Credit card</option>
-      </select>
-      <button onClick={() => transition("CONFIRM")}>Next</button>
-    </>
-  );
-  const renderConfirm = () => (
-    <>
-      Check amount: {amount}
-      <button onClick={() => transition("CAPTURE")}>Back</button>
-      <button
-        type="submit"
-        onClick={() => transition("SUBMIT", { amount, card })}
-        disabled={payment.status === "SUBMITTING"}
-      >
-        Submit
-      </button>
-    </>
-  );
+```js
+const [value, initiator, goodies] = props.foo;
+```
 
-  useEffect(() => {
-    transition();
-  }, [transition]);
+0. `value` Object containing:
+    - `status` String: the status of the sequence (i.e: `"LOADING"`)
+    - `payload?` Any: data associated with the current status (i.e: `{ userName: "@chart" }`)
+1. `initiator` Function: that starts the sequence
+2. `goodies` Object containing:
+    - `history` Component: that renders the history of the sequence (used during development like devtools). Note: the history is transient and destroyed when the component unmounts.
+    - `suspend` Function: that stops the sequence and cancels any scheduled updates (i.e: click button to stop polling)
 
-  return (
-    <form>
-      {(payment.status === "CAPTURE" || payment.status === "FAILED") && (
-        <>{renderForm()}</>
-      )}
-      {(payment.status === "CONFIRM" || payment.status === "SUBMITTING") && (
-        <>{renderConfirm()}</>
-      )}
-      {payment.status === "SUCCESS" && <p>Payment was successful</p>}
+#### `middleware`
 
-      {Debugger}
-    </form>
-  );
-};
+One or more functions that are subscribed to the sequence. They are called whenever a generator yields an update:
+
+```js
+sequence(
+  {
+    foo: fooSequence,
+    bar: barSequence
+  },
+  trackingMiddleware,
+  errorMiddleware,
+  // as many middlewares you desire
+)(Component);
 
 function trackingMiddleware({ status, payload, meta }) {
   if (status === "SUCCESS") {
-    console.log("Track successful payment", payload, meta);
+    // track conversion
   }
 }
 
 function errorMiddleware({ status, payload, meta }) {
   if (status === "FAILED") {
-    console.log("Log failed payment", payload.message, meta);
+    // log error
   }
 }
-
-export default sequence(
-  {
-    paymentSequence: payment,
-  },
-  /**
-   * Middleware is colocated with the component, since the same sequence could
-   * have different middleware requirements depending on where it's used.
-  */
-  trackingMiddleware,
-  errorMiddleware
-)(MyComponent);
 ```
 
-aggregation:
+Each middleware function is passed an object containing:
 
-- component with multiple network requests
-- only update the component when all the data it needs is available
+- `status` String: the status of the sequence
+- `payload?` Any: data associated with the current status
+- `meta` Object containing:
+  - `sequenceId` String: corresponds to the name of the prop (i.e: `foo` or `bar`)
+
+Note: middleware is colocated with components since sequences could have different tracking or error logging requirements depending on where they’re used.
+
+### `update`
+
+Pure function that describes a step in a sequence:
 
 ```js
-async function getRandomQuote() {
-  const res = await fetch(
-    "https://programming-quotes-api.herokuapp.com/quotes/random"
-  );
-  const data = await res.json();
-
-  return data;
-}
-
-async function getRandomNumberFact() {
-  const res = await fetch("http://numbersapi.com/random/trivia");
-  const data = await res.text();
-
-  return data;
-}
-
-async function* getData() {
-  yield update("LOADING");
-
-  try {
-    const [quote, numberFact] = await Promise.all([
-      getRandomQuote(),
-      getRandomNumberFact(),
-    ]);
-
-    yield update("READY", { quote, numberFact });
-  } catch (error) {
-    yield update("FAILED", error);
-  }
-}
-
-export const MyComponent = (props) => {
-  const [data, getData, Debugger] = props.dataSequence;
-
-  useEffect(() => {
-    getData();
-  }, [getData]);
-
-  return (
-    <>
-      {data.status === "LOADING" && <p>Loading...</p>}
-      {data.status === "READY" && (
-        <>
-          <p>Quote: {data.payload.quote.en}</p>
-          <p>Number fact: {data.payload.numberFact}</p>
-          <button onClick={getData}>Get more data</button>
-        </>
-      )}
-      {data.status === "FAILED" && <p>{data.payload.message}</p>}
-      <button onClick={props.unmountMe}>Unmount component</button>
-
-      {Debugger}
-    </>
-  );
-};
-
-export default sequence({
-  dataSequence: getData,
-})(MyComponent);
+yield update(status, payload?);
 ```
 
-race:
+- `status` String: the status of the sequence
+- `payload?` Any: data associated with the current status
 
-- get remote data unless the request takes more than N seconds
+Returns an object containing `{ status, payload? }`.
+
+### `pause`
+
+Helper function that pauses a sequence for a given amount of time:
 
 ```js
-async function getRandomNumberFact() {
-  const res = await fetch("http://numbersapi.com/random/trivia");
-  const data = await res.text();
-
-  return data;
-}
-
-async function* getNumberFact() {
-  yield update("LOADING");
-
-  try {
-    // only wait for the response within 3 seconds
-    const numberFact = await Promise.race([getRandomNumberFact(), pause(3000)]);
-
-    if (numberFact) {
-      yield update("READY", { numberFact });
-    } else {
-      yield update("TIMED_OUT");
-    }
-  } catch (error) {
-    yield update("FAILED", error);
-  }
-}
-
-export const MyComponent = (props) => {
-  const [numberFact, getNumberFact, Debugger] = props.numberFactSequence;
-
-  useEffect(() => {
-    getNumberFact();
-  }, [getNumberFact]);
-
-  return (
-    <>
-      {numberFact.status === "LOADING" && <p>Loading...</p>}
-      {numberFact.status === "READY" && (
-        <>
-          <p>Number fact: {numberFact.payload.numberFact}</p>
-          <button onClick={getNumberFact}>Get another fact</button>
-        </>
-      )}
-      {numberFact.status === "TIMED_OUT" && (
-        <>
-          <p>
-            It looks like you are on a slow network. Please connect to wifi and
-            try again.
-          </p>
-          <button onClick={getNumberFact}>Try again</button>
-        </>
-      )}
-      {numberFact.status === "FAILED" && <p>{numberFact.payload.message}</p>}
-      <button onClick={props.unmountMe}>Unmount component</button>
-
-      {Debugger}
-    </>
-  );
-};
-
-export default sequence({
-  numberFactSequence: getNumberFact,
-})(MyComponent);
+await pause(delay);
 ```
 
-polling:
+- `delay` Number: how long in milliseconds the sequence should be paused
 
-```js
-function checkSession() {
-  return localStorage.token;
-}
-
-async function* polling() {
-  yield update("LOADING");
-
-  while (true) {
-    await pause(3000);
-
-    if (checkSession()) {
-      yield update("VALID");
-    } else {
-      return yield update("INVALID");
-    }
-  }
-}
-
-export const MyComponent = (props) => {
-  const [polling, startPolling, stopPolling, Debugger] = props.pollingSequence;
-
-  return (
-    <>
-      {polling.status === "LOADING" && <p>Loading...</p>}
-      {polling.status === "VALID" && (
-        <>
-          <button onClick={() => localStorage.removeItem("token")}>
-            Sign out
-          </button>
-        </>
-      )}
-      {polling.status === "INVALID" && (
-        <button
-          onClick={() => {
-            localStorage.setItem("token", "abc");
-            startPolling();
-          }}
-        >
-          Sign in
-        </button>
-      )}
-      <button onClick={startPolling}>Start</button>
-      <button onClick={stopPolling}>Stop</button>
-      <button onClick={props.unmountMe}>Unmount component</button>
-      {Debugger}
-    </>
-  );
-};
-
-export default sequence({
-  pollingSequence: polling,
-})(MyComponent);
-```
+Returns a Promise.
