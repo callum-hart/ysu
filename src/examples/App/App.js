@@ -24,6 +24,7 @@ import LaunchCompare from "../Aggregation/LaunchCompare";
 import RandomPhoto from "../Race/RandomPhoto";
 import StockBidder from "../UserJourney/StockBidder";
 import AccountSettings from "../Undo/AccountSettings";
+import AuthorSearch from "../Debounce/AuthorSearch";
 
 const urls = {
   remoteData: "/remote-data",
@@ -32,7 +33,8 @@ const urls = {
   aggregation: "/aggregation",
   race: "/race",
   userJourney: "/user-journey",
-  undo: "/undo"
+  undo: "/undo",
+  debounce: "/debounce"
 };
 
 function App() {
@@ -67,6 +69,9 @@ function App() {
           </SideNavLink>
           <SideNavLink element={NavLink} to={urls.undo}>
             Undo
+          </SideNavLink>
+          <SideNavLink element={NavLink} to={urls.debounce}>
+            Debounce
           </SideNavLink>
         </SideNavItems>
 
@@ -104,6 +109,9 @@ function App() {
                 </Route>
                 <Route path={urls.undo}>
                   <AccountSettings showYsuHistory={showYsuHistory} />
+                </Route>
+                <Route path={urls.debounce}>
+                  <AuthorSearch showYsuHistory={showYsuHistory} />
                 </Route>
                 <Route path="/">
                   <ProgrammingQuote showYsuHistory={showYsuHistory} />
