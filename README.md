@@ -30,7 +30,7 @@ async function* randomQuoteSequence() {
 const RandomQuote = props => {
   const [quote, getQuote] = props.randomQuote;
 
-  useEffect(() =>
+  useEffect(() => {
     getQuote();
   }, [getQuote]);
 
@@ -59,13 +59,14 @@ This is a fairly straightforward example, however other examples with live demos
 
 ## Examples
 
-- [Remote Data Fetching]() Similar to the basic example above.
-- [Polling]() Endpoint is polled every N seconds, where the user can change the frequency of, or pause and resume polling.
-- [Retry Request]() Retries an XHR request until a certain condition is met, or number of retries exceeds 5 attempts.
-- [Aggregation]() Render data from multiple endpoints only when all datasets are ready.
-- [Race]() Time constraign a request to 2 seconds so that the UI isn't blocked on slow internet connections.
-- [User Journey]() Form in which the user has 5 seconds to either confirm or cancel submission.
-- [Undo]() After submitting a form the user can change their mind by clicking undo.
+- [Remote Data Fetching](https://github.com/callum-hart/ysu/tree/master/src/examples/RemoteData) Similar to the basic example above.
+- [Polling](https://github.com/callum-hart/ysu/tree/master/src/examples/Polling) Endpoint is polled every N seconds, where the user can change the frequency of, or pause and resume polling.
+- [Retry Request](https://github.com/callum-hart/ysu/tree/master/src/examples/RetryRequest) Retries an XHR request until a certain condition is met, or number of retries exceeds 5 attempts.
+- [Aggregation](https://github.com/callum-hart/ysu/tree/master/src/examples/Aggregation) Render data from multiple endpoints only when all datasets are ready.
+- [Race](https://github.com/callum-hart/ysu/tree/master/src/examples/Race) Time constraign a request to 2 seconds so that the UI isn't blocked on slow internet connections.
+- [User Journey](https://github.com/callum-hart/ysu/tree/master/src/examples/UserJourney) Form in which the user has 5 seconds to either confirm or cancel submission.
+- [Undo](https://github.com/callum-hart/ysu/tree/master/src/examples/Undo) After submitting a form the user can change their mind by clicking undo.
+- [Debounce](https://github.com/callum-hart/ysu/tree/master/src/examples/Debounce) Run a remote search query once the user has stopped typing for 1 second.
 
 ## Features
 
