@@ -58,24 +58,22 @@ export const InternationalSpaceStation = (props) => {
       {status === "LOADING" && <StructuredListSkeleton rowCount={1} />}
 
       {status === "RECEIVED" && (
-        <>
-          <StructuredListWrapper>
-            <StructuredListHead>
-              <StructuredListRow head>
-                <StructuredListCell head>Latitude</StructuredListCell>
-                <StructuredListCell head>Longitude</StructuredListCell>
-                <StructuredListCell head>Timestamp</StructuredListCell>
-              </StructuredListRow>
-            </StructuredListHead>
-            <StructuredListBody>
-              <StructuredListRow>
-                <StructuredListCell noWrap>{payload.lat}</StructuredListCell>
-                <StructuredListCell>{payload.long}</StructuredListCell>
-                <StructuredListCell>{payload.timestamp}</StructuredListCell>
-              </StructuredListRow>
-            </StructuredListBody>
-          </StructuredListWrapper>
-        </>
+        <StructuredListWrapper>
+          <StructuredListHead>
+            <StructuredListRow>
+              <StructuredListCell head>Latitude</StructuredListCell>
+              <StructuredListCell head>Longitude</StructuredListCell>
+              <StructuredListCell head>Timestamp</StructuredListCell>
+            </StructuredListRow>
+          </StructuredListHead>
+          <StructuredListBody>
+            <StructuredListRow>
+              <StructuredListCell>{payload.lat}</StructuredListCell>
+              <StructuredListCell>{payload.long}</StructuredListCell>
+              <StructuredListCell>{payload.timestamp}</StructuredListCell>
+            </StructuredListRow>
+          </StructuredListBody>
+        </StructuredListWrapper>
       )}
 
       <Form action="#">
