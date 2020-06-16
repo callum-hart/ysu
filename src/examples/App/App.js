@@ -25,6 +25,7 @@ import RandomPhoto from "../Race/RandomPhoto";
 import StockBidder from "../UserJourney/StockBidder";
 import AccountSettings from "../Undo/AccountSettings";
 import AuthorSearch from "../Debounce/AuthorSearch";
+import CurrencyConverter from "../Composition/CurrencyConverter";
 
 const urls = {
   remoteData: "/remote-data",
@@ -34,7 +35,8 @@ const urls = {
   race: "/race",
   userJourney: "/user-journey",
   undo: "/undo",
-  debounce: "/debounce"
+  debounce: "/debounce",
+  composition: "/composition",
 };
 
 function App() {
@@ -72,6 +74,9 @@ function App() {
           </SideNavLink>
           <SideNavLink element={NavLink} to={urls.debounce}>
             Debounce
+          </SideNavLink>
+          <SideNavLink element={NavLink} to={urls.composition}>
+            Composition
           </SideNavLink>
         </SideNavItems>
 
@@ -112,6 +117,9 @@ function App() {
                 </Route>
                 <Route path={urls.debounce}>
                   <AuthorSearch showYsuHistory={showYsuHistory} />
+                </Route>
+                <Route path={urls.composition}>
+                  <CurrencyConverter showYsuHistory={showYsuHistory} />
                 </Route>
                 <Route path="/">
                   <ProgrammingQuote showYsuHistory={showYsuHistory} />
