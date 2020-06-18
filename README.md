@@ -67,7 +67,7 @@ This is a fairly straightforward example, however other examples with live demos
 - [User Journey](https://github.com/callum-hart/ysu/tree/master/src/examples/UserJourney) Form in which the user has 5 seconds to either confirm or cancel submission.
 - [Undo](https://github.com/callum-hart/ysu/tree/master/src/examples/Undo) After submitting a form the user can change their mind by clicking undo.
 - [Debounce](https://github.com/callum-hart/ysu/tree/master/src/examples/Debounce) Run a remote search query once the user has stopped typing for 1 second.
-- Composition TODO (use `yield*` to compose a sequence from multiple generators).
+- [Composition](https://github.com/callum-hart/ysu/tree/master/src/examples/Composition) Compose a sequence from multiple generators.
 
 The examples can be viewed locally by cloning the repository and running `npm install` and then `npm start`.
 
@@ -83,7 +83,7 @@ Much of what makes UI programming difficult is managing values that change over 
 
 The state starts off **idle** → then goes to \***loading** → then finishes with \*\***success** or **failed**.
 
-\* *usually triggered on component mount / form submission*
+\* *usually triggered on component mount / user interaction*
 
 \*\* *depending on the API response*
 
