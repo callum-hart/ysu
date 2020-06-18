@@ -1,4 +1,18 @@
 import React, { useEffect, useState } from "react";
+import {
+  Button,
+  ButtonSkeleton,
+  Form,
+  FormGroup,
+  TextInput,
+  TextInputSkeleton,
+  Select,
+  SelectItem,
+  SelectSkeleton,
+  InlineNotification,
+  InlineLoading,
+  Tile,
+} from "carbon-components-react";
 
 import { sequence } from "../../lib";
 import { currencyConverterSequence } from "./sequence";
@@ -12,62 +26,100 @@ export const CurrencyConverter = (props) => {
   const [amount, setAmount] = useState("");
   const [currency, setCurrency] = useState("");
 
+  const renderForm = () => (
+    <Form action="#" autoComplete="off">
+      <FormGroup>
+        <TextInput
+          id="amount"
+          labelText="Amount (£)"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+        />
+      </FormGroup>
+      <FormGroup>
+        <Select
+          id="rates"
+          labelText="Currency"
+          value={currency}
+          onChange={(e) => setCurrency(e.target.value)}
+        >
+          <SelectItem value={null} text="-- Please choose --" />
+          {Object.keys(payload.rates).map((currency) => (
+            <SelectItem key={currency} value={currency} text={currency} />
+          ))}
+        </Select>
+      </FormGroup>
+      {amount && currency && (
+        <Tile>
+          <p>
+            <strong>GBP</strong> {amount}
+          </p>
+          <p>
+            <strong>{currency}</strong>{" "}
+            {(amount * payload.rates[currency]).toFixed(2)}
+          </p>
+          <p>
+            <strong>Rate</strong> {payload.rates[currency].toFixed(2)}
+          </p>
+        </Tile>
+      )}
+      <Button
+        disabled={!amount || !currency}
+        onClick={() => transition("CONVERT_CURRENCY", { amount, currency })}
+      >
+        Submit
+      </Button>
+    </Form>
+  );
+
   useEffect(() => {
     transition("LOAD_RATES");
   }, [transition]);
 
   return (
     <>
-      {status === "LOADING" && <p>Loading...</p>}
+      <h1>Currency Converter</h1>
 
-      {status === "RATES_UNAVAILABLE" && (
+      {status === "LOADING" && (
         <>
-          <p>Exchange rates unavailable</p>
-          <button onClick={() => transition("LOAD_RATES")}>Try again</button>
+          <TextInputSkeleton />
+          <SelectSkeleton />
+          <ButtonSkeleton />
         </>
       )}
 
-      {status === "READY" && (
-        <form action="#">
-          <input
-            type="text"
-            name="amount"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
+      {status === "RATES_UNAVAILABLE" && (
+        <>
+          <InlineNotification
+            hideCloseButton={true}
+            kind="error"
+            title="Exchange rates unavailable"
           />
-          <select
-            name="rates"
-            value={currency}
-            onChange={(e) => setCurrency(e.target.value)}
-          >
-            <option value={null}>-- Please Choose --</option>
-            {Object.keys(payload.rates).map((currency) => (
-              <option key={currency} value={currency}>
-                {currency}
-              </option>
-            ))}
-          </select>
-          {amount && currency && (
-            <>
-              <p>Rate: {payload.rates[currency]}</p>
-              <p>
-                {amount} GDP buys you {amount * payload.rates[currency]}{" "}
-                {currency}
-              </p>
-            </>
-          )}
-          <button
-            disabled={!amount || !currency}
-            onClick={() => transition("CONVERT_CURRENCY", { amount, currency })}
-          >
-            Submit
-          </button>
-        </form>
+          <Button onClick={() => transition("LOAD_RATES")}>Try again</Button>
+        </>
       )}
 
-      {status === "SUBMITTING" && <p>Submitting...</p>}
-      {status === "SUCCESS" && <p>Success!</p>}
-      {status === "FAILED" && <p>{payload.message}</p>}
+      {status === "READY" && <>{renderForm()}</>}
+
+      {status === "SUBMITTING" && (
+        <InlineLoading description="Converting currency" />
+      )}
+
+      {status === "SUCCESS" && (
+        <InlineNotification
+          hideCloseButton={true}
+          kind="success"
+          title="Currency converted"
+        />
+      )}
+
+      {status === "FAILED" && (
+        <InlineNotification
+          hideCloseButton={true}
+          kind="error"
+          title={payload.message}
+        />
+      )}
 
       {props.showYsuHistory && <>{history}</>}
     </>
