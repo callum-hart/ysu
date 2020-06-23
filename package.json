@@ -6,7 +6,6 @@
   "module": "dist/ysu.esm.js",
   "dependencies": {
     "classnames": "2.2.6",
-    "react-switch": "5.0.1",
     "react-rnd": "10.1.10"
   },
   "devDependencies": {

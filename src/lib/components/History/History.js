@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import cx from "classnames";
 import { Rnd } from "react-rnd";
-import Switch from "react-switch";
 
 import styles from "./History.module.css";
 
@@ -132,20 +131,14 @@ function History({ sequenceId, history, timeTravel }) {
                 <span className={styles.switch__label}>Dark</span>
               )}
             </>
-            <Switch
+            <input
+              className={styles.switch__checkbox}
+              type="checkbox"
+              id="theme"
               checked={theme === "dark"}
               onChange={toggleTheme}
-              uncheckedIcon={false}
-              checkedIcon={false}
-              height={15}
-              width={30}
-              handleDiameter={11}
-              offColor="#7f8188"
-              onColor="#7f8188"
-              offHandleColor="#cbcbcd"
-              onHandleColor="#1f2027"
-              tabIndex="-1"
             />
+            <span className={styles.switch_slider}></span>
           </label>
         </div>
         <ul className={styles.history__list}>
