@@ -7,6 +7,8 @@ YSU is an experimental library to manage asynchronous state in React.
 
 It stands for yield sequential updates, which describes the process of **streaming updates to components from generators.**
 
+<img src="./ysu-demo.gif" alt="YSU video demo of remote data fetching" width="100%" />
+
 ## Basic Example
 
 ```js
@@ -51,11 +53,12 @@ export default sequence({
 
 The component is connected to the generator using the `sequence` higher-order component. When(ever) the generator yields an `update` the component (re)renders.
 
-Each field passed to `sequence` is mapped to a prop which contains a pair. The prop `randomQuote` holds the pair: quote and getQuote. `quote` reflects the current status of the sequence along with any data associated with that status. `getQuote` is a function that initiates the sequence.
+Each field passed to `sequence` is mapped to a prop which contains a pair. The prop `randomQuote` holds the pair:
 
-The `randomQuote` sequence starts when the component mounts, or when the user clicks the *Get another quote* button.
+- `[quote, ` reflects the current status of the sequence, along with any data associated with that status.
+- `getQuote]` is a function that initiates the sequence.
 
-This is a fairly straightforward example, however other examples with live demos are linked below.
+The `randomQuote` sequence starts when the component mounts, or when the user clicks the *Get another quote* button. This is a fairly straightforward example, however other examples with live demos are linked below.
 
 ## Examples
 
