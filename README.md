@@ -229,3 +229,35 @@ await pause(delay);
 - `delay` Number: how long in milliseconds the sequence should be paused
 
 Returns a Promise.
+
+## Todos / Ideas
+
+Tests
+
+Add spinner/loading bar to history to indicate when sequence is running.
+
+Show errors in history (i.e anything that passes through `logError`).
+
+Visual cue in history when sequence has been programmatically suspended.
+
+Ability to suspend/restart sequence from history.
+
+Expose back/forward functions for UIs with undo/redo:
+
+```js
+const [quote, getQuote, { goBack, goForward }] = props.quoteSequence;
+```
+
+Persist context between yields. This would be useful when composing multiple sequences:
+
+```js
+// sequence --
+yield update("READY", { rates }, { persist: true });
+// ...yields from other generators...
+
+// component --
+const [{ status, payload }, transition, { context }] = props.currencyConverter;
+
+<>{context.rates}</> // rates available in context for any statuses that follow READY
+```
+
