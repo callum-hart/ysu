@@ -53,10 +53,10 @@ export default sequence({
 
 The component is connected to the generator using the `sequence` higher-order component. When(ever) the generator yields an `update` the component (re)renders.
 
-Each field passed to `sequence` is mapped to a prop which contains a pair. The prop `randomQuote` holds the pair:
+Each field passed to `sequence` is mapped to a prop which contains a pair. In this example the prop `randomQuote` holds the pair:
 
 - `[quote, ` reflects the current status of the sequence, along with any data associated with that status.
-- `getQuote]` is a function that initiates the sequence.
+- `getQuote]` a function that when called initiates the sequence.
 
 The `randomQuote` sequence starts when the component mounts, or when the user clicks the *Get another quote* button. This is a fairly straightforward example, however other examples with live demos are linked below.
 
@@ -86,9 +86,7 @@ Much of what makes UI programming difficult is managing values that change over 
 
 The state starts off **idle** → then goes to \***loading** → then finishes with \*\***success** or **failed**.
 
-\* *usually triggered on component mount / user interaction*
-
-\*\* *depending on the API response*
+<sup>*usually triggered on component mount / user interaction. **depending on the API response.</sup>
 
 Our API request has three sequential stages with four possible statuses.
 
@@ -110,7 +108,7 @@ You may have noticed this sequence diagram depicts exactly what is happening in 
 
 Since yielding from a generator triggers a (re)render in the UI – and generators can generate values forever – implementing infinite and finite sequences such as polling or retries is trivial.
 
-Polling is as simple as calling an endpoint and yielding an update to the UI from within an [infinite loop](). Whilst retrying an XHR request does the same but within a [finite loop]().
+Polling is as simple as calling an endpoint and yielding an update to the UI from within an [infinite loop](https://github.com/callum-hart/ysu/blob/master/src/examples/Polling/sequence.js#L8). Whilst retrying an XHR request does the same but within a [finite loop](https://github.com/callum-hart/ysu/blob/master/src/examples/RetryRequest/sequence.js#L18).
 
 Note: on component unmount any running sequences are stopped and scheduled updates cancelled automatically. This ensures that infinite sequences (such as polling) only run when the component is mounted.
 
@@ -232,7 +230,9 @@ Returns a Promise.
 
 ## Todos / Ideas
 
-Tests
+Tests.
+
+Only include history and logger in development bundles.
 
 Add spinner/loading bar to history to indicate when sequence is running.
 
@@ -261,3 +261,8 @@ const [{ status, payload }, transition, { context }] = props.currencyConverter;
 <>{context.rates}</> // rates available in context for any statuses that follow READY
 ```
 
+Automatically suspend a running sequence when new sequence is initiated.
+
+Investigate how YSU would integrate with React suspense and concurrent mode.
+
+Only publish library code to npm.
