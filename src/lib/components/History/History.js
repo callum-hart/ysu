@@ -32,7 +32,7 @@ function renderPayload(payload) {
   );
 }
 
-function History({ sequenceId, history, timeTravel }) {
+function History({ sequenceId, history, isRunning, timeTravel }) {
   const [activeIndex, setActiveIndex] = useState(null);
   const [theme, setTheme] = useState(
     localStorage.getItem("ysuTheme") || "dark"
@@ -121,7 +121,8 @@ function History({ sequenceId, history, timeTravel }) {
     >
       <section className={cx(styles.history, styles[`history--${theme}`])}>
         <div className={cx(styles.header, "js-drag-handle")}>
-          <p className={styles.header__title}>{sequenceId}</p>
+          {/* TODO: add spinner when isRunning is true */}
+          <p className={styles.header__title}>{sequenceId} {isRunning && <>running...</>}</p>
           <label className={styles.switch}>
             <>
               {theme === "dark" && (

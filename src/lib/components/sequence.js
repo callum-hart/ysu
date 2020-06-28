@@ -37,6 +37,26 @@ function sequence(mapSequenceToProps, ...middleware) {
                     // TODO: would be nice if History logged suspended sequence
                   }
 
+                  const goodies = ({ isRunning }) => ({
+                    suspend,
+                    history: (
+                      <History
+                        sequenceId={sequenceId}
+                        history={this.history[sequenceId]}
+                        isRunning={isRunning}
+                        timeTravel={(stage) => {
+                          this.setState({
+                            [sequenceId]: [
+                              stage,
+                              this.state[sequenceId][1], // initiator
+                              this.state[sequenceId][2], // goodies
+                            ],
+                          });
+                        }}
+                      />
+                    ),
+                  });
+
                   for await (const val of mapSequenceToProps[sequenceId](
                     ...args
                   )) {
@@ -54,26 +74,8 @@ function sequence(mapSequenceToProps, ...middleware) {
                         {
                           [sequenceId]: [
                             val,
-                            this.state[sequenceId][1], // points to itself
-                            {
-                              suspend,
-                              history: (
-                                // TODO: would it be useful if you could suspend (restart) sequence from History?
-                                <History
-                                  sequenceId={sequenceId}
-                                  history={this.history[sequenceId]}
-                                  timeTravel={(stage) => {
-                                    this.setState({
-                                      [sequenceId]: [
-                                        stage,
-                                        this.state[sequenceId][1],
-                                        this.state[sequenceId][2],
-                                      ],
-                                    });
-                                  }}
-                                />
-                              ),
-                            },
+                            this.state[sequenceId][1], // points to itself (initiator)
+                            goodies({ isRunning: true }),
                           ],
                         },
                         () => {
@@ -91,6 +93,15 @@ function sequence(mapSequenceToProps, ...middleware) {
                       break;
                     }
                   }
+
+                  // notify history sequence has finished running
+                  this.setState({
+                    [sequenceId]: [
+                      this.state[sequenceId][0], // value
+                      this.state[sequenceId][1], // initiator
+                      goodies({ isRunning: false }),
+                    ],
+                  });
                 },
                 {
                   suspend: () => null,
