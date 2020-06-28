@@ -37,6 +37,7 @@ function History({
   history,
   isRunning,
   isSuspended,
+  error,
   suspend,
   timeTravel,
 }) {
@@ -100,7 +101,7 @@ function History({
     if (scrollToRef.current) {
       scrollToRef.current.scrollIntoView();
     }
-  }, [history.length, isSuspended]); // only add isSuspended to dependency array if suspended cue lives in list
+  }, [history.length, isSuspended, error]);
 
   return (
     <Rnd
@@ -187,6 +188,11 @@ function History({
             </li>
           ))}
           {isSuspended && <li>Suspended</li>}
+          {error && (
+            <li>
+              {error.val} {error.timestamp}
+            </li>
+          )}
           <li ref={scrollToRef} aria-hidden="true"></li>
         </ul>
         <div className={cx(styles.footer, "js-drag-handle")}>

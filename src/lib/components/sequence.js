@@ -29,6 +29,7 @@ function sequence(mapSequenceToProps, ...middleware) {
                 initialStatus,
                 async (...args) => {
                   let isSuspended = false;
+                  let error = null;
 
                   function suspend() {
                     isSuspended = true;
@@ -44,6 +45,7 @@ function sequence(mapSequenceToProps, ...middleware) {
                         history={this.history[sequenceId]}
                         isRunning={isRunning}
                         isSuspended={isSuspended}
+                        error={error}
                         suspend={suspend}
                         timeTravel={(stage) => {
                           this.setState({
@@ -65,6 +67,8 @@ function sequence(mapSequenceToProps, ...middleware) {
                       const timestamp = new Date().toLocaleTimeString();
 
                       if (typeof val.status === "undefined") {
+                        error = { val, timestamp };
+
                         logError(sequenceId, val, timestamp); // if dev
                         break;
                       }
