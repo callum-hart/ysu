@@ -32,7 +32,14 @@ function renderPayload(payload) {
   );
 }
 
-function History({ sequenceId, history, isRunning, isSuspended, timeTravel }) {
+function History({
+  sequenceId,
+  history,
+  isRunning,
+  isSuspended,
+  suspend,
+  timeTravel,
+}) {
   const [activeIndex, setActiveIndex] = useState(null);
   const [theme, setTheme] = useState(
     localStorage.getItem("ysuTheme") || "dark"
@@ -183,6 +190,16 @@ function History({ sequenceId, history, isRunning, isSuspended, timeTravel }) {
           <li ref={scrollToRef} aria-hidden="true"></li>
         </ul>
         <div className={cx(styles.footer, "js-drag-handle")}>
+          {isRunning && !isSuspended && (
+            <button
+              type="button"
+              className={styles.button}
+              tabIndex="-1"
+              onClick={suspend}
+            >
+              Stop
+            </button>
+          )}
           <button
             type="button"
             className={styles.button}

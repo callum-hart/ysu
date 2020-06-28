@@ -44,6 +44,7 @@ function sequence(mapSequenceToProps, ...middleware) {
                         history={this.history[sequenceId]}
                         isRunning={isRunning}
                         isSuspended={isSuspended}
+                        suspend={suspend}
                         timeTravel={(stage) => {
                           this.setState({
                             [sequenceId]: [
