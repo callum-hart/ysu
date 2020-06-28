@@ -34,7 +34,6 @@ function sequence(mapSequenceToProps, ...middleware) {
                     isSuspended = true;
 
                     logSuspended(sequenceId); // if dev
-                    // TODO: would be nice if History logged suspended sequence
                   }
 
                   const goodies = ({ isRunning }) => ({
@@ -44,6 +43,7 @@ function sequence(mapSequenceToProps, ...middleware) {
                         sequenceId={sequenceId}
                         history={this.history[sequenceId]}
                         isRunning={isRunning}
+                        isSuspended={isSuspended}
                         timeTravel={(stage) => {
                           this.setState({
                             [sequenceId]: [

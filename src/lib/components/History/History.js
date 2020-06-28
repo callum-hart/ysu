@@ -32,7 +32,7 @@ function renderPayload(payload) {
   );
 }
 
-function History({ sequenceId, history, isRunning, timeTravel }) {
+function History({ sequenceId, history, isRunning, isSuspended, timeTravel }) {
   const [activeIndex, setActiveIndex] = useState(null);
   const [theme, setTheme] = useState(
     localStorage.getItem("ysuTheme") || "dark"
@@ -93,7 +93,7 @@ function History({ sequenceId, history, isRunning, timeTravel }) {
     if (scrollToRef.current) {
       scrollToRef.current.scrollIntoView();
     }
-  }, [history.length]);
+  }, [history.length, isSuspended]); // only add isSuspended to dependency array if suspended cue lives in list
 
   return (
     <Rnd
@@ -122,7 +122,9 @@ function History({ sequenceId, history, isRunning, timeTravel }) {
       <section className={cx(styles.history, styles[`history--${theme}`])}>
         <div className={cx(styles.header, "js-drag-handle")}>
           {/* TODO: add spinner when isRunning is true */}
-          <p className={styles.header__title}>{sequenceId} {isRunning && <>running...</>}</p>
+          <p className={styles.header__title}>
+            {sequenceId} {isRunning && <>running...</>}
+          </p>
           <label className={styles.switch}>
             <>
               {theme === "dark" && (
@@ -177,6 +179,7 @@ function History({ sequenceId, history, isRunning, timeTravel }) {
               {renderPayload(val.payload)}
             </li>
           ))}
+          {isSuspended && <li>Suspended</li>}
           <li ref={scrollToRef} aria-hidden="true"></li>
         </ul>
         <div className={cx(styles.footer, "js-drag-handle")}>
