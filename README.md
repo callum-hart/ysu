@@ -234,13 +234,15 @@ Tests.
 
 Only include history and logger in development bundles.
 
-Add spinner/loading bar to history to indicate when sequence is running.
+Add spinner/loading bar to history to indicate when sequence is running. **Status:** logic DONE, UI (pulsating blue circle next to sequence name) TODO
 
-Show errors in history (i.e anything that passes through `logError`).
+Show errors in history (i.e anything that passes through `logError`). **Status:** logic DONE, UI (red circle next to sequence name, on click scroll to bottom) TODO
 
-Visual cue in history when sequence has been programmatically suspended.
+Visual cue in history when sequence has been programmatically suspended. **Status:** logic DONE, UI (grey circle next to sequence name, on click scroll to bottom, add timestamp to suspended history item) TODO
 
-Ability to suspend/restart sequence from history.
+Ability to suspend/restart sequence from history. **Status:** logic DONE (didn't find restart very useful), UI (if any) TODO
+
+Use same colours in logger as used in history.
 
 Expose back/forward functions for UIs with undo/redo:
 
@@ -266,3 +268,5 @@ Automatically suspend a running sequence when new sequence is initiated.
 Investigate how YSU would integrate with React suspense and concurrent mode.
 
 Only publish library code to npm.
+
+In-built cache and sequence deduplication.

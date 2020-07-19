@@ -99,7 +99,7 @@ function sequence(mapSequenceToProps, ...middleware) {
                     }
                   }
 
-                  // notify history sequence has finished running
+                  // notify history sequence has finished running (if dev)
                   this.setState({
                     [sequenceId]: [
                       this.state[sequenceId][0], // value
