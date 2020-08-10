@@ -270,3 +270,11 @@ Investigate how YSU would integrate with React suspense and concurrent mode.
 Only publish library code to npm.
 
 In-built cache and sequence deduplication.
+
+Hooks alternative to higher-order component API:
+
+```js
+const [quote, getQuote, goodies] = useYsu(randomQuoteSequence);
+
+// with unique key for in-built cache: `useYsu('key', randomQuoteSequence)`
+```
