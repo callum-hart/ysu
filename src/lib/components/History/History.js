@@ -129,9 +129,15 @@ function History({
     >
       <section className={cx(styles.history, styles[`history--${theme}`])}>
         <div className={cx(styles.header, "js-drag-handle")}>
-          {/* TODO: add spinner when isRunning is true */}
           <p className={styles.header__title}>
-            {sequenceId} {isRunning && <>running...</>}
+            {sequenceId}
+            <span
+              className={cx(styles.signal, {
+                [styles["signal--running"]]: isRunning,
+                [styles["signal--suspended"]]: isSuspended,
+                [styles["signal--error"]]: error,
+              })}
+            />
           </p>
           <label className={styles.switch}>
             <>
