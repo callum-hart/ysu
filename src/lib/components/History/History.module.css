@@ -47,9 +47,20 @@
   margin-left: 6px;
 }
 
+@keyframes throb {
+  0% {
+    transform: scale(0.2);
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
 .signal--running {
+  animation: throb 1s ease-out infinite;
   background: #40b4d2;
-  /* TODO: add pulsating animation */
+  opacity: 0;
+  transform: scale(1);
 }
 
 .signal--suspended {
