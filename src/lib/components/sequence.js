@@ -67,9 +67,14 @@ function sequence(mapSequenceToProps, ...middleware) {
                       const timestamp = new Date().toLocaleTimeString();
 
                       if (typeof val.status === "undefined") {
-                        error = { val, timestamp };
+                        const errorMessage = `Sequence yielded a value without a \`status\` field\n\n Received: ${val}\n\n Expected: \n\n {\n   status: String, \n   payload?: Any \n }`;
 
-                        logError(sequenceId, val, timestamp); // if dev
+                        error = {
+                          message: errorMessage,
+                          timestamp,
+                        };
+
+                        logError(sequenceId, errorMessage, timestamp); // if dev
                         break;
                       }
 

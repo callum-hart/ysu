@@ -15,10 +15,9 @@ function logSuspended(id) {
   console.groupEnd();
 }
 
-function logError(id, val, timestamp) {
+function logError(id, errorMessage, timestamp) {
   console.group(`${id} %c@ ${timestamp}`, "color: red;");
-  console.log(" error: ", "Sequence yielded a value without a `status` field");
-  console.log(" received: ", val);
+  console.log(errorMessage);
   console.groupEnd();
 }
 

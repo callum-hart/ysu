@@ -195,8 +195,16 @@ function History({
           ))}
           {isSuspended && <li>Suspended</li>}
           {error && (
-            <li>
-              {error.val} {error.timestamp}
+            // TODO: rename stage to entry
+            <li className={cx(styles.stage, styles[`stage--error`])}>
+              <div className={styles.stage__header}>
+                <span className={cx(styles.stage__status)} />
+                <span className={styles.stage__timestamp}>
+                  {error.timestamp}
+                </span>
+              </div>
+              {/* TODO: rename payload to code snippet */}
+              {renderPayload(new Error(error.message))}
             </li>
           )}
           <li ref={scrollToRef} aria-hidden="true"></li>
