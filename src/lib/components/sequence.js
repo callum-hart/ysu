@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import { History } from "./History/History";
 import { logUpdate, logSuspended, logError } from "../utils/logger";
-import { update } from "../utils/helpers";
+import { update, payloadToString } from "../utils/helpers";
 
 function sequence(mapSequenceToProps, ...middleware) {
   return function (WrappedComponent) {
@@ -67,7 +67,14 @@ function sequence(mapSequenceToProps, ...middleware) {
                       const timestamp = new Date().toLocaleTimeString();
 
                       if (typeof val.status === "undefined") {
-                        const errorMessage = `Sequence yielded a value without a \`status\` field\n\n Received: ${val}\n\n Expected: \n\n {\n   status: String, \n   payload?: Any \n }`;
+                        const errorMessage = `Sequence did not yield a status enum\n\nReceived:\n\n${
+                          payloadToString(val).string
+                        }\n\nExpected:\n\n${
+                          payloadToString({
+                            status: "String",
+                            "payload?": "Any",
+                          }).string
+                        }`;
 
                         error = {
                           message: errorMessage,

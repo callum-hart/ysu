@@ -240,7 +240,9 @@ Show errors in history (i.e anything that passes through `logError`). **Status:*
 
 Visual cue in history when sequence has been programmatically suspended. **Status:** logic DONE, UI (grey circle next to sequence name, on click scroll to bottom, add timestamp to suspended history item) TODO
 
-Ability to suspend/restart sequence from history. **Status:** logic DONE (didn't find restart very useful), UI (if any) TODO
+Ability to suspend/restart sequence from history. **Status:** suspend DONE, restart wasn't very useful
+
+Rename history to devTools
 
 Use same colours in logger as used in history.
 

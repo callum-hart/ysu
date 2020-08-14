@@ -2,32 +2,20 @@ import React, { useState, useEffect, useRef } from "react";
 import cx from "classnames";
 import { Rnd } from "react-rnd";
 
+import { payloadToString } from "../../utils/helpers";
+
 import styles from "./History.module.css";
 
-function renderPayload(payload) {
+function renderCode(payload) {
   if (typeof payload === "undefined") {
     return null;
   }
 
-  if (payload instanceof Error) {
-    return (
-      <pre className={cx(styles.payload, styles["payload--error"])}>
-        {payload.message}
-      </pre>
-    );
-  }
-
-  if (typeof payload === "function") {
-    return (
-      <pre className={cx(styles.payload, styles["payload--function"])}>
-        {payload.toString()}
-      </pre>
-    );
-  }
+  const { type, string } = payloadToString(payload);
 
   return (
-    <pre className={cx(styles.payload, styles[`payload--${typeof payload}`])}>
-      {JSON.stringify(payload, null, 2)}
+    <pre className={cx(styles.payload, styles[`payload--${type}`])}>
+      {string}
     </pre>
   );
 }
@@ -190,7 +178,7 @@ function History({
                   View
                 </button>
               </div>
-              {renderPayload(val.payload)}
+              {renderCode(val.payload)}
             </li>
           ))}
           {isSuspended && <li>Suspended</li>}
@@ -203,8 +191,7 @@ function History({
                   {error.timestamp}
                 </span>
               </div>
-              {/* TODO: rename payload to code snippet */}
-              {renderPayload(new Error(error.message))}
+              {renderCode(new Error(error.message))}
             </li>
           )}
           <li ref={scrollToRef} aria-hidden="true"></li>
