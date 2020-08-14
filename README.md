@@ -244,7 +244,7 @@ Ability to suspend/restart sequence from history. **Status:** suspend DONE, rest
 
 Rename history to devTools
 
-Use same colours in logger as used in history.
+Use same colours in logger as used in history. DONE
 
 Expose back/forward functions for UIs with undo/redo:
 
