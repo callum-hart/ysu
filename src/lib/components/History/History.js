@@ -181,7 +181,15 @@ function History({
               {renderCode(val.payload)}
             </li>
           ))}
-          {isSuspended && <li>Suspended</li>}
+          {isSuspended && (
+            <li className={cx(styles.stage)}>
+              <div className={styles.stage__header}>
+                <span className={cx(styles.stage__status)}>
+                  🛑 Sequence suspended
+                </span>
+              </div>
+            </li>
+          )}
           {error && (
             // TODO: rename stage to entry
             <li className={cx(styles.stage, styles[`stage--error`])}>

@@ -234,11 +234,11 @@ Tests.
 
 Only include history and logger in development bundles.
 
-Add spinner/loading bar to history to indicate when sequence is running. **Status:** logic DONE, UI (pulsating blue circle next to sequence name) TODO
+Add spinner/loading bar to history to indicate when sequence is running. **Status:** DONE
 
-Show errors in history (i.e anything that passes through `logError`). **Status:** logic DONE, UI (red circle next to sequence name, on click scroll to bottom) TODO
+Show errors in history (i.e anything that passes through `logError`). **Status:** DONE
 
-Visual cue in history when sequence has been programmatically suspended. **Status:** logic DONE, UI (grey circle next to sequence name, on click scroll to bottom, add timestamp to suspended history item) TODO
+Visual cue in history when sequence has been programmatically suspended. **Status:** DONE
 
 Ability to suspend/restart sequence from history. **Status:** suspend DONE, restart wasn't very useful
 
