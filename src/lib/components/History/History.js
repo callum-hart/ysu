@@ -151,20 +151,20 @@ function History({
             <li
               key={index}
               ref={historyRefs[index]}
-              className={cx(styles.stage, {
-                [styles["stage--active"]]: activeIndex === index,
-                [styles["stage--last"]]: history.length - 1 === index,
+              className={cx(styles.entry, {
+                [styles["entry--active"]]: activeIndex === index,
+                [styles["entry--last"]]: history.length - 1 === index,
               })}
             >
-              <div className={styles.stage__header}>
+              <div className={styles.entry__header}>
                 <span
-                  className={cx(styles.stage__status, {
-                    [styles["stage__status--idle"]]: val.status === "@IDLE",
+                  className={cx(styles.entry__status, {
+                    [styles["entry__status--idle"]]: val.status === "@IDLE",
                   })}
                 >
                   {val.status}
                 </span>
-                <span className={styles.stage__timestamp}>{timestamp}</span>
+                <span className={styles.entry__timestamp}>{timestamp}</span>
                 <button
                   type="button"
                   className={styles.button}
@@ -181,21 +181,11 @@ function History({
               {renderCode(val.payload)}
             </li>
           ))}
-          {isSuspended && (
-            <li className={cx(styles.stage)}>
-              <div className={styles.stage__header}>
-                <span className={cx(styles.stage__status)}>
-                  🛑 Sequence suspended
-                </span>
-              </div>
-            </li>
-          )}
           {error && (
-            // TODO: rename stage to entry
-            <li className={cx(styles.stage, styles[`stage--error`])}>
-              <div className={styles.stage__header}>
-                <span className={cx(styles.stage__status)} />
-                <span className={styles.stage__timestamp}>
+            <li className={cx(styles.entry, styles[`entry--error`])}>
+              <div className={styles.entry__header}>
+                <span className={cx(styles.entry__status)} />
+                <span className={styles.entry__timestamp}>
                   {error.timestamp}
                 </span>
               </div>
