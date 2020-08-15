@@ -10,7 +10,7 @@ import { sequence } from "../../lib";
 import { primeNumberSequence } from "./sequence";
 
 export const PrimeNumber = (props) => {
-  const [{ status, payload }, getNumber, { history }] = props.primeNumber;
+  const [{ status, payload }, getNumber, { devTools }] = props.primeNumber;
 
   useEffect(() => {
     getNumber();
@@ -45,7 +45,7 @@ export const PrimeNumber = (props) => {
         </>
       )}
 
-      {props.showYsuHistory && <>{history}</>}
+      {props.showDevTools && <>{devTools}</>}
     </>
   );
 };

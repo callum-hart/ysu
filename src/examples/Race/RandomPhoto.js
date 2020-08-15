@@ -10,7 +10,7 @@ import { sequence } from "../../lib";
 import { randomPhotoSequence } from "./sequence";
 
 export const RandomPhoto = (props) => {
-  const [{ status, payload }, getPhoto, { history }] = props.randomPhoto;
+  const [{ status, payload }, getPhoto, { devTools }] = props.randomPhoto;
 
   useEffect(() => {
     getPhoto();
@@ -60,7 +60,7 @@ export const RandomPhoto = (props) => {
         </>
       )}
 
-      {props.showYsuHistory && <>{history}</>}
+      {props.showDevTools && <>{devTools}</>}
     </>
   );
 };

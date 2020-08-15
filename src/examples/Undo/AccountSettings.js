@@ -14,7 +14,7 @@ export const AccountSettings = (props) => {
   const [
     { status, payload },
     transition,
-    { history, suspend },
+    { devTools, suspend },
   ] = props.deleteAccount;
 
   return (
@@ -73,7 +73,7 @@ export const AccountSettings = (props) => {
         />
       )}
 
-      {props.showYsuHistory && <>{history}</>}
+      {props.showDevTools && <>{devTools}</>}
     </Form>
   );
 };

@@ -39,7 +39,7 @@ function sequence(mapSequenceToProps, ...middleware) {
 
                   const goodies = ({ isRunning }) => ({
                     suspend,
-                    history: (
+                    devTools: (
                       <History
                         sequenceId={sequenceId}
                         history={this.history[sequenceId]}
@@ -122,7 +122,7 @@ function sequence(mapSequenceToProps, ...middleware) {
                 },
                 {
                   suspend: () => null,
-                  history: null,
+                  devTools: null,
                 },
               ],
             };

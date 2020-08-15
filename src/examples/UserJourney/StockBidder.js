@@ -16,7 +16,7 @@ export const StockBidder = (props) => {
   const [
     { status, payload },
     transition,
-    { history, suspend },
+    { devTools, suspend },
   ] = props.stockBid;
   const [price, setPrice] = useState("");
   const [units, setUnits] = useState("");
@@ -123,7 +123,7 @@ export const StockBidder = (props) => {
         )}
         {status === "SUCCESS" && <>{renderSuccess()}</>}
 
-        {props.showYsuHistory && <>{history}</>}
+        {props.showDevTools && <>{devTools}</>}
       </Form>
     </>
   );

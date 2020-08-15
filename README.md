@@ -69,7 +69,7 @@ The `randomQuote` sequence starts when the component mounts, or when the user cl
 - [Race](https://github.com/callum-hart/ysu/tree/master/src/examples/Race) Time constraign a request to 2 seconds so that the UI isn't blocked on slow internet connections.
 - [User Journey](https://github.com/callum-hart/ysu/tree/master/src/examples/UserJourney) Form in which the user has 5 seconds to either confirm or cancel submission.
 - [Undo](https://github.com/callum-hart/ysu/tree/master/src/examples/Undo) After submitting a form the user can change their mind by clicking undo.
-- [Debounce](https://github.com/callum-hart/ysu/tree/master/src/examples/Debounce) Run a remote search query once the user has stopped typing for 1 second.
+- [Debounce](https://github.com/callum-hart/ysu/tree/master/src/examples/Debounce) Run a remote search query once the user has stopped typing for 2 seconds.
 - [Composition](https://github.com/callum-hart/ysu/tree/master/src/examples/Composition) Compose a sequence from multiple generators.
 
 The examples can be viewed locally by cloning the repository and running `npm install` and then `npm start`.
@@ -163,7 +163,7 @@ const [value, initiator, goodies] = props.foo;
     - `payload?` Any: data associated with the current status (i.e: `{ userName: "@chart" }`)
 1. `initiator` Function: that starts the sequence
 2. `goodies` Object containing:
-    - `history` Component: that renders the history of the sequence (used during development like devtools). Note: the history is transient and destroyed when the component unmounts.
+    - `devTools` Component: that renders the history of the sequence. Note: the history is transient and destroyed when the component unmounts.
     - `suspend` Function: that stops the sequence and cancels any scheduled updates (i.e: click button to stop polling)
 
 #### `middleware`
@@ -232,19 +232,19 @@ Returns a Promise.
 
 Tests.
 
-Only include history and logger in development bundles.
+Only include devTools and logger in development bundles.
 
-Add spinner/loading bar to history to indicate when sequence is running. **Status:** DONE
+Add spinner/loading bar to devTools to indicate when sequence is running. **Status:** DONE
 
-Show errors in history (i.e anything that passes through `logError`). **Status:** DONE
+Show errors in devTools (i.e anything that passes through `logError`). **Status:** DONE
 
-Visual cue in history when sequence has been programmatically suspended. **Status:** DONE
+Visual cue in devTools when sequence has been programmatically suspended. **Status:** DONE
 
-Ability to suspend/restart sequence from history. **Status:** suspend DONE, restart wasn't very useful
+Ability to suspend/restart sequence from devTools. **Status:** suspend DONE, restart wasn't very useful
 
-Rename history to devTools
+Rename history to devTools **Status:** DONE
 
-Use same colours in logger as used in history. DONE
+Use same colours in logger as used in devTools. DONE
 
 Expose back/forward functions for UIs with undo/redo:
 

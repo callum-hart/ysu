@@ -21,7 +21,7 @@ export const CurrencyConverter = (props) => {
   const [
     { status, payload },
     transition,
-    { history },
+    { devTools },
   ] = props.currencyConverter;
   const [amount, setAmount] = useState("");
   const [currency, setCurrency] = useState("");
@@ -121,7 +121,7 @@ export const CurrencyConverter = (props) => {
         />
       )}
 
-      {props.showYsuHistory && <>{history}</>}
+      {props.showDevTools && <>{devTools}</>}
     </>
   );
 };
