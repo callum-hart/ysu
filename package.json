@@ -4,6 +4,10 @@
   "description": "Stream updates to React components from ES6 generators",
   "main": "dist/ysu.cjs.js",
   "module": "dist/ysu.esm.js",
+  "files": [
+    "/dist",
+    "README.md"
+  ],
   "dependencies": {
     "classnames": "2.2.6",
     "react-rnd": "10.1.10"

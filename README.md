@@ -244,7 +244,7 @@ Ability to suspend/restart sequence from devTools. **Status:** suspend DONE, res
 
 Rename history to devTools **Status:** DONE
 
-Use same colours in logger as used in devTools. DONE
+Use same colours in logger as used in devTools. **Status:** DONE
 
 Expose back/forward functions for UIs with undo/redo:
 
@@ -269,7 +269,7 @@ Automatically suspend a running sequence when new sequence is initiated.
 
 Investigate how YSU would integrate with React suspense and concurrent mode.
 
-Only publish library code to npm.
+Only publish library code to npm. **Status:** DONE
 
 In-built cache and sequence deduplication.
 
