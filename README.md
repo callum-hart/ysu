@@ -7,7 +7,7 @@ YSU is an experimental library to manage asynchronous state in React.
 
 It stands for yield sequential updates, which describes the process of **streaming updates to components from generators.**
 
-<img src="./ysu-demo.gif" alt="YSU video demo of remote data fetching" width="100%" />
+<img src="./assets/ysu-demo.gif" alt="YSU video demo of remote data fetching" width="100%" />
 
 ## Basic Example
 
@@ -76,9 +76,17 @@ The examples can be viewed locally by cloning the repository and running `npm in
 
 ## Features
 
-- Debugger with time travel 🚀
-- Baked in logger
-- Middleware support
+**DevTools with time travel 🚀**
+
+<img src="./assets/dev-tools.png" alt="Screenshot of YSU DevTools" />
+
+**Baked in logger**
+
+<img src="./assets/logger.png" alt="Screenshot of YSU Logger" />
+
+**Middleware support**
+
+See [middleware](#middleware) documentation.
 
 ## Overview
 
