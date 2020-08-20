@@ -3,11 +3,11 @@
 
 ## Introduction
 
-YSU is an experimental library to manage asynchronous state in React.
+YSU is an \*experimental library to manage asynchronous state in React. It stands for yield sequential updates, which describes the process of **streaming updates to components from generators.**
 
-It stands for yield sequential updates, which describes the process of **streaming updates to components from generators.**
+<sup>*no test coverage and not yet used in production, please use with caution.</sup>
 
-<img src="./assets/ysu-demo.gif" alt="YSU video demo of remote data fetching" width="100%" />
+<img src="./assets/undo-demo.gif" alt="GIF demonstrating undo after submitting a form" width="100%" />
 
 ## Basic Example
 
@@ -51,7 +51,7 @@ export default sequence({
 })(RandomQuote);
 ```
 
-The component is connected to the generator using the `sequence` higher-order component. When(ever) the generator yields an `update` the component (re)renders.
+The component is connected to the generator using the `sequence` higher-order component. **When(ever) the generator yields an `update` the component (re)renders.**
 
 Each field passed to `sequence` is mapped to a prop which contains a pair. In this example the prop `randomQuote` holds the pair:
 
@@ -78,15 +78,15 @@ The examples can be viewed locally by cloning the repository and running `npm in
 
 **DevTools with time travel 🚀**
 
-<img src="./assets/dev-tools.png" alt="Screenshot of YSU DevTools" />
+<img src="./assets/dev-tools.png" alt="Screenshot of the DevTools panel" />
 
 **Baked in logger**
 
-<img src="./assets/logger.png" alt="Screenshot of YSU Logger" />
+<img src="./assets/logger.png" alt="Screenshot of the console logger" />
 
 **Middleware support**
 
-See [middleware](#middleware) documentation.
+Subscribe to a stream of updates for third-party interactions such as logging and error reporting.
 
 ## Overview
 
@@ -116,7 +116,7 @@ You may have noticed this sequence diagram depicts exactly what is happening in 
 
 Since yielding from a generator triggers a (re)render in the UI – and generators can generate values forever – implementing infinite and finite sequences such as polling or retries is trivial.
 
-Polling is as simple as calling an endpoint and yielding an update to the UI from within an [infinite loop](https://github.com/callum-hart/ysu/blob/master/src/examples/Polling/sequence.js#L8). Whilst retrying an XHR request does the same but within a [finite loop](https://github.com/callum-hart/ysu/blob/master/src/examples/RetryRequest/sequence.js#L18).
+Polling is as simple as calling an endpoint and yielding an update to the UI within an [infinite loop](https://github.com/callum-hart/ysu/blob/master/src/examples/Polling/sequence.js#L8). Whilst retrying an XHR request does the same but from within a [finite loop](https://github.com/callum-hart/ysu/blob/master/src/examples/RetryRequest/sequence.js#L18).
 
 Note: on component unmount any running sequences are stopped and scheduled updates cancelled automatically. This ensures that infinite sequences (such as polling) only run when the component is mounted.
 
@@ -128,7 +128,7 @@ Note: on component unmount any running sequences are stopped and scheduled updat
 - Same API for function and class components
 - Predictable rendering (1 yield equals 1 render)
 - Simple mental model (components just recieve props)
-- Use [status enums](https://kentcdodds.com/blog/stop-using-isloading-booleans)
+- Baked-in [status enums](https://kentcdodds.com/blog/stop-using-isloading-booleans)
 - Decorator approach popularised by Redux
 - Pair approach popularised by hooks
 
