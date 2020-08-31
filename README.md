@@ -3,7 +3,7 @@
 
 ## Introduction
 
-YSU is an \*experimental library to manage asynchronous state in React. It stands for yield sequential updates, which describes the process of **streaming updates to components from generators.**
+YSU is an experimental\* library to manage asynchronous state in React. It stands for yield sequential updates, which describes the process of **streaming updates to components from generators.**
 
 <sup>*no test coverage and not yet used in production, please use with caution.</sup>
 
@@ -92,7 +92,7 @@ Subscribe to a stream of updates for third-party interactions such as logging an
 
 Much of what makes UI programming difficult is managing values that change over time. If we take the sterotypical async example of making an API request, the UI reflects a sequence of state changes.
 
-The state starts off **idle** → then goes to \***loading** → then finishes with \*\***success** or **failed**.
+The state starts off **idle** → then goes to **loading**\* → then finishes with **success** or **failed**\*\*.
 
 <sup>*usually triggered on component mount / user interaction. **depending on the API response.</sup>
 
@@ -114,7 +114,7 @@ The API request can be represented using a sequence diagram:
 
 You may have noticed this sequence diagram depicts exactly what is happening in the basic example shown earlier.
 
-Since yielding from a generator triggers a (re)render in the UI – and generators can generate values forever – implementing infinite and finite sequences such as polling or retries is trivial.
+Since yielding from a generator triggers a (re)render in the UI, and generators can generate values forever, implementing infinite and finite sequences such as polling or retries is trivial.
 
 Polling is as simple as calling an endpoint and yielding an update to the UI within an [infinite loop](https://github.com/callum-hart/ysu/blob/master/src/examples/Polling/sequence.js#L8). Whilst retrying an XHR request does the same but from within a [finite loop](https://github.com/callum-hart/ysu/blob/master/src/examples/RetryRequest/sequence.js#L18).
 
@@ -288,3 +288,5 @@ const [quote, getQuote, goodies] = useYsu(randomQuoteSequence);
 
 // with unique key for in-built cache: `useYsu('key', randomQuoteSequence)`
 ```
+
+Move devTools and logger out into separate package `@ysu/devtools`.
