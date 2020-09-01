@@ -113,6 +113,7 @@ function History({
           JSON.stringify({ width: offsetWidth, height: offsetHeight })
         );
       }}
+      // TODO check this out: https://stackoverflow.com/questions/63568611/set-text-for-screen-reader-and-hide-children-from-screen-readers
       aria-hidden="true"
     >
       <section className={cx(styles.history, styles[`history--${theme}`])}>
@@ -220,6 +221,7 @@ function History({
             disabled={activeIndex === history.length - 1}
             tabIndex="-1"
             onClick={goForward}
+            data-qa="forward-button"
           >
             Forward
           </button>

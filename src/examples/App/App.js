@@ -26,6 +26,7 @@ import StockBidder from "../UserJourney/StockBidder";
 import AccountSettings from "../Undo/AccountSettings";
 import AuthorSearch from "../Debounce/AuthorSearch";
 import CurrencyConverter from "../Composition/CurrencyConverter";
+import TimeTravel from "../../qa/TimeTravel";
 
 const urls = {
   remoteData: "/remote-data",
@@ -37,6 +38,9 @@ const urls = {
   undo: "/undo",
   debounce: "/debounce",
   composition: "/composition",
+  qa: {
+    timeTravel: "/qa/time-travel",
+  },
 };
 
 function App() {
@@ -121,8 +125,11 @@ function App() {
                 <Route path={urls.composition}>
                   <CurrencyConverter showDevTools={showDevTools} />
                 </Route>
-                <Route path="/">
-                  <ProgrammingQuote showDevTools={showDevTools} />
+
+                {/* QA -- */}
+
+                <Route path={urls.qa.timeTravel}>
+                  <TimeTravel />
                 </Route>
               </Switch>
             </Column>
