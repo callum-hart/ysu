@@ -27,6 +27,7 @@ import AccountSettings from "../Undo/AccountSettings";
 import AuthorSearch from "../Debounce/AuthorSearch";
 import CurrencyConverter from "../Composition/CurrencyConverter";
 import TimeTravel from "../../qa/TimeTravel";
+import Validation from "../../qa/Validation";
 
 const urls = {
   remoteData: "/remote-data",
@@ -40,6 +41,7 @@ const urls = {
   composition: "/composition",
   qa: {
     timeTravel: "/qa/time-travel",
+    validation: "/qa/validation",
   },
 };
 
@@ -130,6 +132,10 @@ function App() {
 
                 <Route path={urls.qa.timeTravel}>
                   <TimeTravel />
+                </Route>
+
+                <Route path={urls.qa.validation}>
+                  <Validation />
                 </Route>
               </Switch>
             </Column>

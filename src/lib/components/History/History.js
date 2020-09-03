@@ -126,6 +126,15 @@ function History({
                 [styles["signal--suspended"]]: isSuspended,
                 [styles["signal--error"]]: error,
               })}
+              data-qa={`${
+                isRunning
+                  ? "running-signal"
+                  : isSuspended
+                  ? "suspended-signal"
+                  : error
+                  ? "error-signal"
+                  : null
+              }`}
             />
           </p>
           <label className={styles.switch}>
@@ -147,7 +156,7 @@ function History({
             <span className={styles.switch_slider}></span>
           </label>
         </div>
-        <ul className={styles.history__list}>
+        <ul className={styles.history__list} data-qa="history-list">
           {history.map(({ val, timestamp }, index) => (
             <li
               key={index}
@@ -184,7 +193,10 @@ function History({
             </li>
           ))}
           {error && (
-            <li className={cx(styles.entry, styles[`entry--error`])}>
+            <li
+              className={cx(styles.entry, styles[`entry--error`])}
+              data-qa="error-message"
+            >
               <div className={styles.entry__header}>
                 <span className={cx(styles.entry__status)} />
                 <span className={styles.entry__timestamp}>

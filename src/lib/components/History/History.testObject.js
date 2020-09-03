@@ -10,4 +10,16 @@ export const History = {
   getForwardButton() {
     return cy.get('[data-qa="forward-button"]');
   },
+
+  getErrorMessage() {
+    return cy.get('[data-qa="error-message"]');
+  },
+
+  getErrorSignal() {
+    return cy.get('[data-qa="error-signal"]');
+  },
+
+  getHistoryList() {
+    return cy.get('[data-qa="history-list"]');
+  },
 };
