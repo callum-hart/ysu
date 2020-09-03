@@ -175,6 +175,7 @@ function History({
                     setActiveIndex(index);
                     timeTravel(val);
                   }}
+                  data-qa="view-button"
                 >
                   View
                 </button>
@@ -212,6 +213,7 @@ function History({
             disabled={activeIndex === 0}
             tabIndex="-1"
             onClick={goBack}
+            data-qa="back-button"
           >
             Back
           </button>
