@@ -28,6 +28,7 @@ import AuthorSearch from "../Debounce/AuthorSearch";
 import CurrencyConverter from "../Composition/CurrencyConverter";
 import TimeTravel from "../../qa/TimeTravel";
 import Validation from "../../qa/Validation";
+import Suspend from "../../qa/Suspend";
 
 const urls = {
   remoteData: "/remote-data",
@@ -42,6 +43,7 @@ const urls = {
   qa: {
     timeTravel: "/qa/time-travel",
     validation: "/qa/validation",
+    suspend: "/qa/suspend"
   },
 };
 
@@ -133,9 +135,11 @@ function App() {
                 <Route path={urls.qa.timeTravel}>
                   <TimeTravel />
                 </Route>
-
                 <Route path={urls.qa.validation}>
                   <Validation />
+                </Route>
+                <Route path={urls.qa.suspend}>
+                  <Suspend />
                 </Route>
               </Switch>
             </Column>

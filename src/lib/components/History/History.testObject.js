@@ -3,6 +3,10 @@ export const History = {
     return cy.get('[data-qa="view-button"]');
   },
 
+  getStopButton() {
+    return cy.get('[data-qa="stop-button"]');
+  },
+
   getBackButton() {
     return cy.get('[data-qa="back-button"]');
   },
@@ -17,6 +21,14 @@ export const History = {
 
   getErrorSignal() {
     return cy.get('[data-qa="error-signal"]');
+  },
+
+  getRunningSignal() {
+    return cy.get('[data-qa="running-signal"]');
+  },
+
+  getSuspendedSignal() {
+    return cy.get('[data-qa="suspended-signal"]');
   },
 
   getHistoryList() {

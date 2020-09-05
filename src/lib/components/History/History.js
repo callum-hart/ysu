@@ -216,6 +216,7 @@ function History({
               className={styles.button}
               tabIndex="-1"
               onClick={suspend}
+              data-qa="stop-button"
             >
               Stop
             </button>
