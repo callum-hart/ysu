@@ -22,4 +22,8 @@ export const History = {
   getHistoryList() {
     return cy.get('[data-qa="history-list"]');
   },
+
+  getActiveEntry() {
+    return cy.get('[data-qa="active-entry"]');
+  },
 };

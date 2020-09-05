@@ -165,6 +165,7 @@ function History({
                 [styles["entry--active"]]: activeIndex === index,
                 [styles["entry--last"]]: history.length - 1 === index,
               })}
+              data-qa={`${activeIndex === index ? "active-entry" : null}`}
             >
               <div className={styles.entry__header}>
                 <span
