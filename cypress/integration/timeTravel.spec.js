@@ -77,9 +77,41 @@ describe("Time travel", () => {
     });
   });
 
-  describe("when I click the bottom view button", () => {
+  describe("when I click forward", () => {
     before(() => {
-      History.getViewButton().last().click();
+      History.getForwardButton().click();
+    });
+
+    it("the result should be FIRST", () => {
+      cy.get("@result").should("contain", "FIRST");
+    });
+
+    it("the active entry should be FIRST", () => {
+      History.getActiveEntry().should("contain", "FIRST");
+    });
+
+    it("the back button should be enabled", () => {
+      History.getBackButton().should("not.be.disabled");
+    });
+  });
+
+  describe("when I click forward again", () => {
+    before(() => {
+      History.getForwardButton().click();
+    });
+
+    it("the result should be MIDDLE", () => {
+      cy.get("@result").should("contain", "MIDDLE");
+    });
+
+    it("the active entry should be MIDDLE", () => {
+      History.getActiveEntry().should("contain", "MIDDLE");
+    });
+  });
+
+  describe("when I click forward again", () => {
+    before(() => {
+      History.getForwardButton().click();
     });
 
     it("the result should be LAST", () => {
@@ -110,6 +142,24 @@ describe("Time travel", () => {
 
     it("the back button should be disabled", () => {
       History.getBackButton().should("be.disabled");
+    });
+  });
+
+  describe("when I click the bottom view button", () => {
+    before(() => {
+      History.getViewButton().last().click();
+    });
+
+    it("the result should be LAST", () => {
+      cy.get("@result").should("contain", "LAST");
+    });
+
+    it("the active entry should be LAST", () => {
+      History.getActiveEntry().should("contain", "LAST");
+    });
+
+    it("the forward button should be disabled", () => {
+      History.getForwardButton().should("be.disabled");
     });
   });
 });
