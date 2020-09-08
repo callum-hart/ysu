@@ -5,12 +5,8 @@ describe("Time travel", () => {
     cy.visit("/qa/time-travel");
   });
 
-  beforeEach(() => {
-    cy.get('[data-qa="result"]').as("result");
-  });
-
   it("the result should be LAST", () => {
-    cy.get("@result").should("contain", "LAST");
+    cy.qa("result").should("contain", "LAST");
   });
 
   it("the active entry should be LAST", () => {
@@ -31,7 +27,7 @@ describe("Time travel", () => {
     });
 
     it("the result should be MIDDLE", () => {
-      cy.get("@result").should("contain", "MIDDLE");
+      cy.qa("result").should("contain", "MIDDLE");
     });
 
     it("the active entry should be MIDDLE", () => {
@@ -49,7 +45,7 @@ describe("Time travel", () => {
     });
 
     it("the result should be FIRST", () => {
-      cy.get("@result").should("contain", "FIRST");
+      cy.qa("result").should("contain", "FIRST");
     });
 
     it("the active entry should be FIRST", () => {
@@ -63,7 +59,7 @@ describe("Time travel", () => {
     });
 
     it("the result should be @IDLE", () => {
-      cy.get("@result").should("contain", "@IDLE");
+      cy.qa("result").should("contain", "@IDLE");
     });
 
     it("the active entry should be @IDLE", () => {
@@ -81,7 +77,7 @@ describe("Time travel", () => {
     });
 
     it("the result should be FIRST", () => {
-      cy.get("@result").should("contain", "FIRST");
+      cy.qa("result").should("contain", "FIRST");
     });
 
     it("the active entry should be FIRST", () => {
@@ -99,7 +95,7 @@ describe("Time travel", () => {
     });
 
     it("the result should be MIDDLE", () => {
-      cy.get("@result").should("contain", "MIDDLE");
+      cy.qa("result").should("contain", "MIDDLE");
     });
 
     it("the active entry should be MIDDLE", () => {
@@ -113,7 +109,7 @@ describe("Time travel", () => {
     });
 
     it("the result should be LAST", () => {
-      cy.get("@result").should("contain", "LAST");
+      cy.qa("result").should("contain", "LAST");
     });
 
     it("the active entry should be LAST", () => {
@@ -131,7 +127,7 @@ describe("Time travel", () => {
     });
 
     it("the result should be @IDLE", () => {
-      cy.get("@result").should("contain", "@IDLE");
+      cy.qa("result").should("contain", "@IDLE");
     });
 
     it("the active entry should be @IDLE", () => {
@@ -149,7 +145,7 @@ describe("Time travel", () => {
     });
 
     it("the result should be LAST", () => {
-      cy.get("@result").should("contain", "LAST");
+      cy.qa("result").should("contain", "LAST");
     });
 
     it("the active entry should be LAST", () => {

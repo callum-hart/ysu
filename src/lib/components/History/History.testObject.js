@@ -1,41 +1,41 @@
 export const History = {
   getViewButton() {
-    return cy.get('[data-qa="view-button"]');
+    return cy.qa("view-button");
   },
 
   getStopButton() {
-    return cy.get('[data-qa="stop-button"]');
+    return cy.qa("stop-button");
   },
 
   getBackButton() {
-    return cy.get('[data-qa="back-button"]');
+    return cy.qa("back-button");
   },
 
   getForwardButton() {
-    return cy.get('[data-qa="forward-button"]');
+    return cy.qa("forward-button");
   },
 
   getErrorMessage() {
-    return cy.get('[data-qa="error-message"]');
+    return cy.qa("error-message");
   },
 
   getErrorSignal() {
-    return cy.get('[data-qa="error-signal"]');
+    return cy.qa("error-signal");
   },
 
   getRunningSignal() {
-    return cy.get('[data-qa="running-signal"]');
+    return cy.qa("running-signal");
   },
 
   getSuspendedSignal() {
-    return cy.get('[data-qa="suspended-signal"]');
+    return cy.qa("suspended-signal");
   },
 
   getHistoryList() {
-    return cy.get('[data-qa="history-list"]');
+    return cy.qa("history-list");
   },
 
   getActiveEntry() {
-    return cy.get('[data-qa="active-entry"]');
+    return cy.qa("active-entry");
   },
 };

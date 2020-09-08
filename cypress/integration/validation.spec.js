@@ -5,12 +5,8 @@ describe("Validation", () => {
     cy.visit("/qa/validation");
   });
 
-  beforeEach(() => {
-    cy.get('[data-qa="result"]').as("result");
-  });
-
   it("the result should be BEFORE ERROR", () => {
-    cy.get("@result").should("contain", "BEFORE ERROR");
+    cy.qa("result").should("contain", "BEFORE ERROR");
   });
 
   it("the error message should be shown", () => {

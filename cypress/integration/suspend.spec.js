@@ -29,7 +29,7 @@ describe("Suspend", () => {
 
   describe("when I click start from consumer", () => {
     before(() => {
-      cy.get('[data-qa="start-button"]').click();
+      cy.qa("start-button").click();
     });
 
     it("the running signal should be shown", () => {
@@ -43,7 +43,7 @@ describe("Suspend", () => {
 
   describe("when I click suspend from consumer", () => {
     before(() => {
-      cy.get('[data-qa="suspend-button"]').click();
+      cy.qa("suspend-button").click();
     });
 
     it("the suspended signal should be shown", () => {
