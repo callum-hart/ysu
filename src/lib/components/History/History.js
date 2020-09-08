@@ -118,7 +118,7 @@ function History({
         aria-hidden="true"
       >
         <section className={cx(styles.history, styles[`history--${theme}`])}>
-          <div className={cx(styles.header, "js-drag-handle")} data-qa="header">
+          <div className={cx(styles.header, "js-drag-handle")} data-qa="ysu-header">
             <p className={styles.header__title}>
               {sequenceId}
               <span
@@ -129,16 +129,16 @@ function History({
                 })}
                 data-qa={`${
                   isRunning
-                    ? "running-signal"
+                    ? "ysu-running-signal"
                     : isSuspended
-                    ? "suspended-signal"
+                    ? "ysu-suspended-signal"
                     : error
-                    ? "error-signal"
+                    ? "ysu-error-signal"
                     : null
                 }`}
               />
             </p>
-            <label className={styles.switch} data-qa="theme-switch">
+            <label className={styles.switch} data-qa="ysu-theme-switch">
               <>
                 {theme === "dark" && (
                   <span className={styles.switch__label}>Light</span>
@@ -157,7 +157,7 @@ function History({
               <span className={styles.switch_slider}></span>
             </label>
           </div>
-          <ul className={styles.history__list} data-qa="history-list">
+          <ul className={styles.history__list} data-qa="ysu-history-list">
             {history.map(({ val, timestamp }, index) => (
               <li
                 key={index}
@@ -166,7 +166,7 @@ function History({
                   [styles["entry--active"]]: activeIndex === index,
                   [styles["entry--last"]]: history.length - 1 === index,
                 })}
-                data-qa={`${activeIndex === index ? "active-entry" : null}`}
+                data-qa={`${activeIndex === index ? "ysu-active-entry" : null}`}
               >
                 <div className={styles.entry__header}>
                   <span
@@ -186,7 +186,7 @@ function History({
                       setActiveIndex(index);
                       timeTravel(val);
                     }}
-                    data-qa="view-button"
+                    data-qa="ysu-view-button"
                   >
                     View
                   </button>
@@ -197,7 +197,7 @@ function History({
             {error && (
               <li
                 className={cx(styles.entry, styles[`entry--error`])}
-                data-qa="error-message"
+                data-qa="ysu-error-message"
               >
                 <div className={styles.entry__header}>
                   <span className={cx(styles.entry__status)} />
@@ -217,7 +217,7 @@ function History({
                 className={styles.button}
                 tabIndex="-1"
                 onClick={suspend}
-                data-qa="stop-button"
+                data-qa="ysu-stop-button"
               >
                 Stop
               </button>
@@ -228,7 +228,7 @@ function History({
               disabled={activeIndex === 0}
               tabIndex="-1"
               onClick={goBack}
-              data-qa="back-button"
+              data-qa="ysu-back-button"
             >
               Back
             </button>
@@ -238,7 +238,7 @@ function History({
               disabled={activeIndex === history.length - 1}
               tabIndex="-1"
               onClick={goForward}
-              data-qa="forward-button"
+              data-qa="ysu-forward-button"
             >
               Forward
             </button>
