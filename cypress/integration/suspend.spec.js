@@ -1,10 +1,8 @@
 import { History } from "../../src/lib/components/History/History.testObject";
-import { pinDevTools } from "../utils";
 
 describe("Suspend", () => {
   before(() => {
     cy.visit("/qa/suspend");
-    pinDevTools("suspend");
   });
 
   it("the running signal should be shown", () => {

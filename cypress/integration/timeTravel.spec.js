@@ -1,10 +1,8 @@
 import { History } from "../../src/lib/components/History/History.testObject";
-import { pinDevTools } from "../utils";
 
 describe("Time travel", () => {
   before(() => {
     cy.visit("/qa/time-travel");
-    pinDevTools("timeTravel");
   });
 
   beforeEach(() => {

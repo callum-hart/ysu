@@ -92,158 +92,160 @@ function History({
   }, [history.length, isSuspended, error]);
 
   return (
-    <Rnd
-      className={styles["rnd--ysu"]}
-      default={{
-        ...position,
-        ...dimension,
-      }}
-      minWidth={300}
-      minHeight={300}
-      dragHandleClassName="js-drag-handle"
-      onDragStop={(event, { x, y }) => {
-        localStorage.setItem(
-          `ysuPosition-${sequenceId}`,
-          JSON.stringify({ x, y })
-        );
-      }}
-      onResizeStop={(event, direction, { offsetWidth, offsetHeight }) => {
-        localStorage.setItem(
-          `ysuDimension-${sequenceId}`,
-          JSON.stringify({ width: offsetWidth, height: offsetHeight })
-        );
-      }}
-      // TODO check this out: https://stackoverflow.com/questions/63568611/set-text-for-screen-reader-and-hide-children-from-screen-readers
-      aria-hidden="true"
-    >
-      <section className={cx(styles.history, styles[`history--${theme}`])}>
-        <div className={cx(styles.header, "js-drag-handle")}>
-          <p className={styles.header__title}>
-            {sequenceId}
-            <span
-              className={cx(styles.signal, {
-                [styles["signal--running"]]: isRunning,
-                [styles["signal--suspended"]]: isSuspended,
-                [styles["signal--error"]]: error,
-              })}
-              data-qa={`${
-                isRunning
-                  ? "running-signal"
-                  : isSuspended
-                  ? "suspended-signal"
-                  : error
-                  ? "error-signal"
-                  : null
-              }`}
-            />
-          </p>
-          <label className={styles.switch}>
-            <>
-              {theme === "dark" && (
-                <span className={styles.switch__label}>Light</span>
-              )}
-              {theme === "light" && (
-                <span className={styles.switch__label}>Dark</span>
-              )}
-            </>
-            <input
-              className={styles.switch__checkbox}
-              type="checkbox"
-              id="theme"
-              checked={theme === "dark"}
-              onChange={toggleTheme}
-            />
-            <span className={styles.switch_slider}></span>
-          </label>
-        </div>
-        <ul className={styles.history__list} data-qa="history-list">
-          {history.map(({ val, timestamp }, index) => (
-            <li
-              key={index}
-              ref={historyRefs[index]}
-              className={cx(styles.entry, {
-                [styles["entry--active"]]: activeIndex === index,
-                [styles["entry--last"]]: history.length - 1 === index,
-              })}
-              data-qa={`${activeIndex === index ? "active-entry" : null}`}
-            >
-              <div className={styles.entry__header}>
-                <span
-                  className={cx(styles.entry__status, {
-                    [styles["entry__status--idle"]]: val.status === "@IDLE",
-                  })}
-                >
-                  {val.status}
-                </span>
-                <span className={styles.entry__timestamp}>{timestamp}</span>
-                <button
-                  type="button"
-                  className={styles.button}
-                  disabled={activeIndex === index}
-                  tabIndex="-1"
-                  onClick={() => {
-                    setActiveIndex(index);
-                    timeTravel(val);
-                  }}
-                  data-qa="view-button"
-                >
-                  View
-                </button>
-              </div>
-              {renderCode(val.payload)}
-            </li>
-          ))}
-          {error && (
-            <li
-              className={cx(styles.entry, styles[`entry--error`])}
-              data-qa="error-message"
-            >
-              <div className={styles.entry__header}>
-                <span className={cx(styles.entry__status)} />
-                <span className={styles.entry__timestamp}>
-                  {error.timestamp}
-                </span>
-              </div>
-              {renderCode(new Error(error.message))}
-            </li>
-          )}
-          <li ref={scrollToRef} aria-hidden="true"></li>
-        </ul>
-        <div className={cx(styles.footer, "js-drag-handle")}>
-          {isRunning && !isSuspended && (
+    <div>
+      <Rnd
+        className={styles["rnd--ysu"]}
+        default={{
+          ...position,
+          ...dimension,
+        }}
+        minWidth={300}
+        minHeight={300}
+        dragHandleClassName="js-drag-handle"
+        onDragStop={(event, { x, y }) => {
+          localStorage.setItem(
+            `ysuPosition-${sequenceId}`,
+            JSON.stringify({ x, y })
+          );
+        }}
+        onResizeStop={(event, direction, { offsetWidth, offsetHeight }) => {
+          localStorage.setItem(
+            `ysuDimension-${sequenceId}`,
+            JSON.stringify({ width: offsetWidth, height: offsetHeight })
+          );
+        }}
+        // TODO check this out: https://stackoverflow.com/questions/63568611/set-text-for-screen-reader-and-hide-children-from-screen-readers
+        aria-hidden="true"
+      >
+        <section className={cx(styles.history, styles[`history--${theme}`])}>
+          <div className={cx(styles.header, "js-drag-handle")}>
+            <p className={styles.header__title}>
+              {sequenceId}
+              <span
+                className={cx(styles.signal, {
+                  [styles["signal--running"]]: isRunning,
+                  [styles["signal--suspended"]]: isSuspended,
+                  [styles["signal--error"]]: error,
+                })}
+                data-qa={`${
+                  isRunning
+                    ? "running-signal"
+                    : isSuspended
+                    ? "suspended-signal"
+                    : error
+                    ? "error-signal"
+                    : null
+                }`}
+              />
+            </p>
+            <label className={styles.switch}>
+              <>
+                {theme === "dark" && (
+                  <span className={styles.switch__label}>Light</span>
+                )}
+                {theme === "light" && (
+                  <span className={styles.switch__label}>Dark</span>
+                )}
+              </>
+              <input
+                className={styles.switch__checkbox}
+                type="checkbox"
+                id="theme"
+                checked={theme === "dark"}
+                onChange={toggleTheme}
+              />
+              <span className={styles.switch_slider}></span>
+            </label>
+          </div>
+          <ul className={styles.history__list} data-qa="history-list">
+            {history.map(({ val, timestamp }, index) => (
+              <li
+                key={index}
+                ref={historyRefs[index]}
+                className={cx(styles.entry, {
+                  [styles["entry--active"]]: activeIndex === index,
+                  [styles["entry--last"]]: history.length - 1 === index,
+                })}
+                data-qa={`${activeIndex === index ? "active-entry" : null}`}
+              >
+                <div className={styles.entry__header}>
+                  <span
+                    className={cx(styles.entry__status, {
+                      [styles["entry__status--idle"]]: val.status === "@IDLE",
+                    })}
+                  >
+                    {val.status}
+                  </span>
+                  <span className={styles.entry__timestamp}>{timestamp}</span>
+                  <button
+                    type="button"
+                    className={styles.button}
+                    disabled={activeIndex === index}
+                    tabIndex="-1"
+                    onClick={() => {
+                      setActiveIndex(index);
+                      timeTravel(val);
+                    }}
+                    data-qa="view-button"
+                  >
+                    View
+                  </button>
+                </div>
+                {renderCode(val.payload)}
+              </li>
+            ))}
+            {error && (
+              <li
+                className={cx(styles.entry, styles[`entry--error`])}
+                data-qa="error-message"
+              >
+                <div className={styles.entry__header}>
+                  <span className={cx(styles.entry__status)} />
+                  <span className={styles.entry__timestamp}>
+                    {error.timestamp}
+                  </span>
+                </div>
+                {renderCode(new Error(error.message))}
+              </li>
+            )}
+            <li ref={scrollToRef} aria-hidden="true"></li>
+          </ul>
+          <div className={cx(styles.footer, "js-drag-handle")}>
+            {isRunning && !isSuspended && (
+              <button
+                type="button"
+                className={styles.button}
+                tabIndex="-1"
+                onClick={suspend}
+                data-qa="stop-button"
+              >
+                Stop
+              </button>
+            )}
             <button
               type="button"
               className={styles.button}
+              disabled={activeIndex === 0}
               tabIndex="-1"
-              onClick={suspend}
-              data-qa="stop-button"
+              onClick={goBack}
+              data-qa="back-button"
             >
-              Stop
+              Back
             </button>
-          )}
-          <button
-            type="button"
-            className={styles.button}
-            disabled={activeIndex === 0}
-            tabIndex="-1"
-            onClick={goBack}
-            data-qa="back-button"
-          >
-            Back
-          </button>
-          <button
-            type="button"
-            className={styles.button}
-            disabled={activeIndex === history.length - 1}
-            tabIndex="-1"
-            onClick={goForward}
-            data-qa="forward-button"
-          >
-            Forward
-          </button>
-        </div>
-      </section>
-    </Rnd>
+            <button
+              type="button"
+              className={styles.button}
+              disabled={activeIndex === history.length - 1}
+              tabIndex="-1"
+              onClick={goForward}
+              data-qa="forward-button"
+            >
+              Forward
+            </button>
+          </div>
+        </section>
+      </Rnd>
+    </div>
   );
 }
 
