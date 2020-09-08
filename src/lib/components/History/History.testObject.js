@@ -1,4 +1,12 @@
 export const History = {
+  getHeader() {
+    return cy.qa("header");
+  },
+
+  getThemeSwitch() {
+    return cy.qa("theme-switch");
+  },
+
   getViewButton() {
     return cy.qa("view-button");
   },

@@ -29,6 +29,7 @@ import CurrencyConverter from "../Composition/CurrencyConverter";
 import TimeTravel from "../../qa/TimeTravel";
 import Validation from "../../qa/Validation";
 import Suspend from "../../qa/Suspend";
+import Usability from "../../qa/Usability";
 
 const urls = {
   remoteData: "/remote-data",
@@ -43,7 +44,8 @@ const urls = {
   qa: {
     timeTravel: "/qa/time-travel",
     validation: "/qa/validation",
-    suspend: "/qa/suspend"
+    suspend: "/qa/suspend",
+    usability: "/qa/usability"
   },
 };
 
@@ -140,6 +142,9 @@ function App() {
                 </Route>
                 <Route path={urls.qa.suspend}>
                   <Suspend />
+                </Route>
+                <Route path={urls.qa.usability}>
+                  <Usability />
                 </Route>
               </Switch>
             </Column>

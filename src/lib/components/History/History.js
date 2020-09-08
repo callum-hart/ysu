@@ -118,7 +118,7 @@ function History({
         aria-hidden="true"
       >
         <section className={cx(styles.history, styles[`history--${theme}`])}>
-          <div className={cx(styles.header, "js-drag-handle")}>
+          <div className={cx(styles.header, "js-drag-handle")} data-qa="header">
             <p className={styles.header__title}>
               {sequenceId}
               <span
@@ -138,7 +138,7 @@ function History({
                 }`}
               />
             </p>
-            <label className={styles.switch}>
+            <label className={styles.switch} data-qa="theme-switch">
               <>
                 {theme === "dark" && (
                   <span className={styles.switch__label}>Light</span>
