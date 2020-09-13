@@ -4,6 +4,7 @@ import { History } from "./History/History";
 import { logUpdate, logSuspended, logError } from "../utils/logger";
 import { update, payloadToString } from "../utils/helpers";
 
+// TODO: rename to withSequence
 function sequence(mapSequenceToProps, ...middleware) {
   return function (WrappedComponent) {
     return class extends Component {
@@ -63,10 +64,11 @@ function sequence(mapSequenceToProps, ...middleware) {
                   for await (const val of mapSequenceToProps[sequenceId](
                     ...args
                   )) {
-                    if (this._isMounted && !isSuspended) {
+                    if (!isSuspended) {
                       const timestamp = new Date().toLocaleTimeString();
 
                       if (typeof val.status === "undefined") {
+                        // TODO: move this out so it can be reused by the hook
                         const errorMessage = `Sequence did not yield a status enum\n\nReceived:\n\n${
                           payloadToString(val).string
                         }\n\nExpected:\n\n${
@@ -131,13 +133,10 @@ function sequence(mapSequenceToProps, ...middleware) {
         );
       }
 
-      componentDidMount() {
-        // Antipattern but adequate for poc.
-        this._isMounted = true;
-      }
-
       componentWillUnmount() {
-        this._isMounted = false;
+        for (const sequenceId of Object.keys(mapSequenceToProps)) {
+          this.state[sequenceId][2].suspend();
+        }
       }
 
       render() {
