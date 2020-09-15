@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import { sequence, update, pause } from "../lib";
+import { sequence, update, pause, useSequence } from "../lib";
 
 // sequence --
 async function* suspendSequence() {
@@ -11,27 +11,59 @@ async function* suspendSequence() {
 }
 
 // component --
-export const Suspend = (props) => {
-  const [{ status }, start, { devTools, suspend }] = props.suspend;
+const Suspend = ({ status, start, suspend, devTools }) => (
+  <>
+    <p data-qa="result">{status}</p>
+    <button type="button" onClick={start} data-qa="start-button">
+      Start
+    </button>
+    <button type="button" onClick={suspend} data-qa="suspend-button">
+      Suspend
+    </button>
+    {devTools}
+  </>
+);
+
+// hoc --
+const SuspendHoc = (props) => {
+  const [{ status }, start, { devTools, suspend }] = props.suspendHoc;
 
   useEffect(() => {
     start();
-  }, [start]);
+  }, []);
 
   return (
-    <>
-      <p data-qa="result">{status}</p>
-      <button type="button" onClick={start} data-qa="start-button">
-        Start
-      </button>
-      <button type="button" onClick={suspend} data-qa="suspend-button">
-        Suspend
-      </button>
-      {devTools}
-    </>
+    <Suspend
+      status={status}
+      start={start}
+      suspend={suspend}
+      devTools={devTools}
+    />
   );
 };
 
-export default sequence({
-  suspend: suspendSequence,
-})(Suspend);
+// hook --
+const SuspendHook = () => {
+  const [{ status }, start, { devTools, suspend }] = useSequence(
+    "suspendHook",
+    suspendSequence
+  );
+
+  useEffect(() => {
+    start();
+  }, []);
+
+  return (
+    <Suspend
+      status={status}
+      start={start}
+      suspend={suspend}
+      devTools={devTools}
+    />
+  );
+};
+
+export default {
+  Hoc: sequence({ suspendHoc: suspendSequence })(SuspendHoc),
+  Hook: SuspendHook,
+};

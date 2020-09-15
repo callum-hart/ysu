@@ -44,7 +44,10 @@ const urls = {
   qa: {
     timeTravel: "/qa/time-travel",
     validation: "/qa/validation",
-    suspend: "/qa/suspend",
+    suspend: {
+      hoc: "/qa/suspend/hoc",
+      hook: "/qa/suspend/hook",
+    },
     usability: "/qa/usability"
   },
 };
@@ -140,8 +143,11 @@ function App() {
                 <Route path={urls.qa.validation}>
                   <Validation />
                 </Route>
-                <Route path={urls.qa.suspend}>
-                  <Suspend />
+                <Route path={urls.qa.suspend.hoc}>
+                  <Suspend.Hoc />
+                </Route>
+                <Route path={urls.qa.suspend.hook}>
+                  <Suspend.Hook />
                 </Route>
                 <Route path={urls.qa.usability}>
                   <Usability />

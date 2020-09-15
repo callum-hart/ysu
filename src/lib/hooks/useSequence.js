@@ -4,6 +4,7 @@ import { History } from "../components/History/History";
 import { logUpdate, logSuspended, logError } from "../utils/logger";
 import { update, payloadToString } from "../utils/helpers";
 
+// TODO: make sequenceId optional, if not present use generator.name
 function useSequence(sequenceId, generator) {
   const initialStatus = update("@IDLE");
   const history = useRef([

@@ -4,7 +4,7 @@ import { History } from "./History/History";
 import { logUpdate, logSuspended, logError } from "../utils/logger";
 import { update, payloadToString } from "../utils/helpers";
 
-// TODO: rename to withSequence
+// TODO: rename to withSequence, and rename mapSequenceToProps to generatorMap
 function sequence(mapSequenceToProps, ...middleware) {
   return function (WrappedComponent) {
     return class extends Component {
