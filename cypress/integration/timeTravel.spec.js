@@ -1,159 +1,161 @@
 import { History } from "../../src/lib/components/History/History.testObject";
 
-describe("Time travel", () => {
-  before(() => {
-    cy.visit("/qa/time-travel");
-  });
-
-  it("the result should be LAST", () => {
-    cy.qa("result").should("contain", "LAST");
-  });
-
-  it("the active entry should be LAST", () => {
-    History.getActiveEntry().should("contain", "LAST");
-  });
-
-  it("the back button should be enabled", () => {
-    History.getBackButton().should("not.be.disabled");
-  });
-
-  it("the forward button should be disabled", () => {
-    History.getForwardButton().should("be.disabled");
-  });
-
-  describe("when I click back", () => {
+["hoc", "hook"].forEach((api) => {
+  describe(`Time travel (${api})`, () => {
     before(() => {
-      History.getBackButton().click();
+      cy.visit(`/qa/time-travel/${api}`);
     });
 
-    it("the result should be MIDDLE", () => {
-      cy.qa("result").should("contain", "MIDDLE");
+    it("the result should be LAST", () => {
+      cy.qa("result").should("contain", "LAST");
     });
 
-    it("the active entry should be MIDDLE", () => {
-      History.getActiveEntry().should("contain", "MIDDLE");
-    });
-
-    it("the forward button should be enabled", () => {
-      History.getForwardButton().should("not.be.disabled");
-    });
-  });
-
-  describe("when I click back again", () => {
-    before(() => {
-      History.getBackButton().click();
-    });
-
-    it("the result should be FIRST", () => {
-      cy.qa("result").should("contain", "FIRST");
-    });
-
-    it("the active entry should be FIRST", () => {
-      History.getActiveEntry().should("contain", "FIRST");
-    });
-  });
-
-  describe("when I click back again", () => {
-    before(() => {
-      History.getBackButton().click();
-    });
-
-    it("the result should be @IDLE", () => {
-      cy.qa("result").should("contain", "@IDLE");
-    });
-
-    it("the active entry should be @IDLE", () => {
-      History.getActiveEntry().should("contain", "@IDLE");
-    });
-
-    it("the back button should be disabled", () => {
-      History.getBackButton().should("be.disabled");
-    });
-  });
-
-  describe("when I click forward", () => {
-    before(() => {
-      History.getForwardButton().click();
-    });
-
-    it("the result should be FIRST", () => {
-      cy.qa("result").should("contain", "FIRST");
-    });
-
-    it("the active entry should be FIRST", () => {
-      History.getActiveEntry().should("contain", "FIRST");
+    it("the active entry should be LAST", () => {
+      History.getActiveEntry().should("contain", "LAST");
     });
 
     it("the back button should be enabled", () => {
       History.getBackButton().should("not.be.disabled");
     });
-  });
-
-  describe("when I click forward again", () => {
-    before(() => {
-      History.getForwardButton().click();
-    });
-
-    it("the result should be MIDDLE", () => {
-      cy.qa("result").should("contain", "MIDDLE");
-    });
-
-    it("the active entry should be MIDDLE", () => {
-      History.getActiveEntry().should("contain", "MIDDLE");
-    });
-  });
-
-  describe("when I click forward again", () => {
-    before(() => {
-      History.getForwardButton().click();
-    });
-
-    it("the result should be LAST", () => {
-      cy.qa("result").should("contain", "LAST");
-    });
-
-    it("the active entry should be LAST", () => {
-      History.getActiveEntry().should("contain", "LAST");
-    });
 
     it("the forward button should be disabled", () => {
       History.getForwardButton().should("be.disabled");
     });
-  });
 
-  describe("when I click the top view button", () => {
-    before(() => {
-      History.getViewButton().first().click();
+    describe("when I click back", () => {
+      before(() => {
+        History.getBackButton().click();
+      });
+
+      it("the result should be MIDDLE", () => {
+        cy.qa("result").should("contain", "MIDDLE");
+      });
+
+      it("the active entry should be MIDDLE", () => {
+        History.getActiveEntry().should("contain", "MIDDLE");
+      });
+
+      it("the forward button should be enabled", () => {
+        History.getForwardButton().should("not.be.disabled");
+      });
     });
 
-    it("the result should be @IDLE", () => {
-      cy.qa("result").should("contain", "@IDLE");
+    describe("when I click back again", () => {
+      before(() => {
+        History.getBackButton().click();
+      });
+
+      it("the result should be FIRST", () => {
+        cy.qa("result").should("contain", "FIRST");
+      });
+
+      it("the active entry should be FIRST", () => {
+        History.getActiveEntry().should("contain", "FIRST");
+      });
     });
 
-    it("the active entry should be @IDLE", () => {
-      History.getActiveEntry().should("contain", "@IDLE");
+    describe("when I click back again", () => {
+      before(() => {
+        History.getBackButton().click();
+      });
+
+      it("the result should be @IDLE", () => {
+        cy.qa("result").should("contain", "@IDLE");
+      });
+
+      it("the active entry should be @IDLE", () => {
+        History.getActiveEntry().should("contain", "@IDLE");
+      });
+
+      it("the back button should be disabled", () => {
+        History.getBackButton().should("be.disabled");
+      });
     });
 
-    it("the back button should be disabled", () => {
-      History.getBackButton().should("be.disabled");
-    });
-  });
+    describe("when I click forward", () => {
+      before(() => {
+        History.getForwardButton().click();
+      });
 
-  describe("when I click the bottom view button", () => {
-    before(() => {
-      History.getViewButton().last().click();
+      it("the result should be FIRST", () => {
+        cy.qa("result").should("contain", "FIRST");
+      });
+
+      it("the active entry should be FIRST", () => {
+        History.getActiveEntry().should("contain", "FIRST");
+      });
+
+      it("the back button should be enabled", () => {
+        History.getBackButton().should("not.be.disabled");
+      });
     });
 
-    it("the result should be LAST", () => {
-      cy.qa("result").should("contain", "LAST");
+    describe("when I click forward again", () => {
+      before(() => {
+        History.getForwardButton().click();
+      });
+
+      it("the result should be MIDDLE", () => {
+        cy.qa("result").should("contain", "MIDDLE");
+      });
+
+      it("the active entry should be MIDDLE", () => {
+        History.getActiveEntry().should("contain", "MIDDLE");
+      });
     });
 
-    it("the active entry should be LAST", () => {
-      History.getActiveEntry().should("contain", "LAST");
+    describe("when I click forward again", () => {
+      before(() => {
+        History.getForwardButton().click();
+      });
+
+      it("the result should be LAST", () => {
+        cy.qa("result").should("contain", "LAST");
+      });
+
+      it("the active entry should be LAST", () => {
+        History.getActiveEntry().should("contain", "LAST");
+      });
+
+      it("the forward button should be disabled", () => {
+        History.getForwardButton().should("be.disabled");
+      });
     });
 
-    it("the forward button should be disabled", () => {
-      History.getForwardButton().should("be.disabled");
+    describe("when I click the top view button", () => {
+      before(() => {
+        History.getViewButton().first().click();
+      });
+
+      it("the result should be @IDLE", () => {
+        cy.qa("result").should("contain", "@IDLE");
+      });
+
+      it("the active entry should be @IDLE", () => {
+        History.getActiveEntry().should("contain", "@IDLE");
+      });
+
+      it("the back button should be disabled", () => {
+        History.getBackButton().should("be.disabled");
+      });
+    });
+
+    describe("when I click the bottom view button", () => {
+      before(() => {
+        History.getViewButton().last().click();
+      });
+
+      it("the result should be LAST", () => {
+        cy.qa("result").should("contain", "LAST");
+      });
+
+      it("the active entry should be LAST", () => {
+        History.getActiveEntry().should("contain", "LAST");
+      });
+
+      it("the forward button should be disabled", () => {
+        History.getForwardButton().should("be.disabled");
+      });
     });
   });
 });
