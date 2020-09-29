@@ -4,8 +4,7 @@ import { History } from "./History/History";
 import { logUpdate, logSuspended, logError } from "../utils/logger";
 import { update, payloadToString } from "../utils/helpers";
 
-// TODO: rename to withSequence, and rename mapSequenceToProps to generatorMap
-function sequence(mapSequenceToProps, ...middleware) {
+function sequence(generatorMap, ...middleware) {
   return function (WrappedComponent) {
     return class extends Component {
       constructor(props) {
@@ -13,135 +12,130 @@ function sequence(mapSequenceToProps, ...middleware) {
 
         this.history = {};
 
-        this.state = Object.keys(mapSequenceToProps).reduce(
-          (acc, sequenceId) => {
-            const initialStatus = update("@IDLE");
+        this.state = Object.keys(generatorMap).reduce((acc, sequenceId) => {
+          const initialStatus = update("@IDLE");
 
-            this.history[sequenceId] = [
-              {
-                val: initialStatus,
-                timestamp: new Date().toLocaleTimeString(),
-              },
-            ];
+          this.history[sequenceId] = [
+            {
+              val: initialStatus,
+              timestamp: new Date().toLocaleTimeString(),
+            },
+          ];
 
-            return {
-              ...acc,
-              [sequenceId]: [
-                initialStatus,
-                async (...args) => {
-                  let isSuspended = false;
-                  let notifySuspended = true;
-                  let error = null;
+          return {
+            ...acc,
+            [sequenceId]: [
+              initialStatus,
+              async (...args) => {
+                let isSuspended = false;
+                let notifySuspended = true;
+                let error = null;
 
-                  function suspend({ terminate = false } = {}) {
-                    isSuspended = true;
+                function suspend({ terminate = false } = {}) {
+                  isSuspended = true;
 
-                    if (terminate) {
-                      notifySuspended = false;
-                    }
-
-                    logSuspended(sequenceId); // if dev
+                  if (terminate) {
+                    notifySuspended = false;
                   }
 
-                  const goodies = ({ isRunning }) => ({
-                    suspend,
-                    devTools: (
-                      <History
-                        sequenceId={sequenceId}
-                        history={this.history[sequenceId]}
-                        isRunning={isRunning}
-                        isSuspended={isSuspended}
-                        error={error}
-                        suspend={suspend}
-                        timeTravel={(stage) => {
-                          this.setState({
-                            [sequenceId]: [
-                              stage,
-                              this.state[sequenceId][1], // initiator
-                              this.state[sequenceId][2], // goodies
-                            ],
-                          });
-                        }}
-                      />
-                    ),
-                  });
+                  logSuspended(sequenceId); // if dev
+                }
 
-                  for await (const val of mapSequenceToProps[sequenceId](
-                    ...args
-                  )) {
-                    if (!isSuspended) {
-                      const timestamp = new Date().toLocaleTimeString();
-
-                      if (typeof val.status === "undefined") {
-                        // TODO: move this out so it can be reused by the hook
-                        const errorMessage = `Sequence did not yield a status enum\n\nReceived:\n\n${
-                          payloadToString(val).string
-                        }\n\nExpected:\n\n${
-                          payloadToString({
-                            status: "String",
-                            "payload?": "Any",
-                          }).string
-                        }`;
-
-                        error = {
-                          message: errorMessage,
-                          timestamp,
-                        };
-
-                        logError(sequenceId, errorMessage, timestamp); // if dev
-                        break;
-                      }
-
-                      this.history[sequenceId].push({ val, timestamp }); // if dev
-
-                      this.setState(
-                        {
+                const goodies = ({ isRunning }) => ({
+                  suspend,
+                  devTools: (
+                    <History
+                      sequenceId={sequenceId}
+                      history={this.history[sequenceId]}
+                      isRunning={isRunning}
+                      isSuspended={isSuspended}
+                      error={error}
+                      suspend={suspend}
+                      timeTravel={(stage) => {
+                        this.setState({
                           [sequenceId]: [
-                            val,
-                            this.state[sequenceId][1], // points to itself (initiator)
-                            goodies({ isRunning: true }),
+                            stage,
+                            this.state[sequenceId][1], // initiator
+                            this.state[sequenceId][2], // goodies
                           ],
-                        },
-                        () => {
-                          logUpdate(sequenceId, val, timestamp); // if dev
+                        });
+                      }}
+                    />
+                  ),
+                });
 
-                          middleware.forEach((fn) =>
-                            fn.call(this, {
-                              ...val,
-                              meta: { sequenceId },
-                            })
-                          );
-                        }
-                      );
-                    } else {
+                for await (const val of generatorMap[sequenceId](...args)) {
+                  if (!isSuspended) {
+                    const timestamp = new Date().toLocaleTimeString();
+
+                    if (typeof val.status === "undefined") {
+                      // TODO: move this out so it can be reused by the hook
+                      const errorMessage = `Sequence did not yield a status enum\n\nReceived:\n\n${
+                        payloadToString(val).string
+                      }\n\nExpected:\n\n${
+                        payloadToString({
+                          status: "String",
+                          "payload?": "Any",
+                        }).string
+                      }`;
+
+                      error = {
+                        message: errorMessage,
+                        timestamp,
+                      };
+
+                      logError(sequenceId, errorMessage, timestamp); // if dev
                       break;
                     }
-                  }
 
-                  // notify history sequence has finished running (if dev)
-                  if (notifySuspended) {
-                    this.setState({
-                      [sequenceId]: [
-                        this.state[sequenceId][0], // value
-                        this.state[sequenceId][1], // initiator
-                        goodies({ isRunning: false }),
-                      ],
-                    });
+                    this.history[sequenceId].push({ val, timestamp }); // if dev
+
+                    this.setState(
+                      {
+                        [sequenceId]: [
+                          val,
+                          this.state[sequenceId][1], // points to itself (initiator)
+                          goodies({ isRunning: true }),
+                        ],
+                      },
+                      () => {
+                        logUpdate(sequenceId, val, timestamp); // if dev
+
+                        middleware.forEach((fn) =>
+                          fn.call(this, {
+                            ...val,
+                            meta: { sequenceId },
+                          })
+                        );
+                      }
+                    );
+                  } else {
+                    break;
                   }
-                },
-                {
-                  suspend: () => null,
-                  devTools: null,
-                },
-              ],
-            };
-          },
-          {}
-        );
+                }
+
+                // notify history sequence has finished running (if dev)
+                if (notifySuspended) {
+                  this.setState({
+                    [sequenceId]: [
+                      this.state[sequenceId][0], // value
+                      this.state[sequenceId][1], // initiator
+                      goodies({ isRunning: false }),
+                    ],
+                  });
+                }
+              },
+              {
+                suspend: () => null,
+                devTools: null,
+              },
+            ],
+          };
+        }, {});
       }
 
       componentWillUnmount() {
-        for (const sequenceId of Object.keys(mapSequenceToProps)) {
+        for (const sequenceId of Object.keys(generatorMap)) {
           this.state[sequenceId][2].suspend({ terminate: true });
         }
       }
