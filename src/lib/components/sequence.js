@@ -30,10 +30,15 @@ function sequence(mapSequenceToProps, ...middleware) {
                 initialStatus,
                 async (...args) => {
                   let isSuspended = false;
+                  let notifySuspended = true;
                   let error = null;
 
-                  function suspend() {
+                  function suspend({ terminate = false } = {}) {
                     isSuspended = true;
+
+                    if (terminate) {
+                      notifySuspended = false;
+                    }
 
                     logSuspended(sequenceId); // if dev
                   }
@@ -114,13 +119,15 @@ function sequence(mapSequenceToProps, ...middleware) {
                   }
 
                   // notify history sequence has finished running (if dev)
-                  this.setState({
-                    [sequenceId]: [
-                      this.state[sequenceId][0], // value
-                      this.state[sequenceId][1], // initiator
-                      goodies({ isRunning: false }),
-                    ],
-                  });
+                  if (notifySuspended) {
+                    this.setState({
+                      [sequenceId]: [
+                        this.state[sequenceId][0], // value
+                        this.state[sequenceId][1], // initiator
+                        goodies({ isRunning: false }),
+                      ],
+                    });
+                  }
                 },
                 {
                   suspend: () => null,
@@ -135,7 +142,7 @@ function sequence(mapSequenceToProps, ...middleware) {
 
       componentWillUnmount() {
         for (const sequenceId of Object.keys(mapSequenceToProps)) {
-          this.state[sequenceId][2].suspend();
+          this.state[sequenceId][2].suspend({ terminate: true });
         }
       }
 
