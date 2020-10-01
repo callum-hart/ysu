@@ -28,14 +28,14 @@ function sequence(generatorMap, ...middleware) {
               initialStatus,
               async (...args) => {
                 let isSuspended = false;
-                let notifySuspended = true;
+                let isTerminated = false;
                 let error = null;
 
                 function suspend({ terminate = false } = {}) {
                   isSuspended = true;
 
                   if (terminate) {
-                    notifySuspended = false;
+                    isTerminated = true;
                   }
 
                   logSuspended(sequenceId); // if dev
@@ -115,7 +115,7 @@ function sequence(generatorMap, ...middleware) {
                 }
 
                 // notify history sequence has finished running (if dev)
-                if (notifySuspended) {
+                if (!isTerminated) {
                   this.setState({
                     [sequenceId]: [
                       this.state[sequenceId][0], // value
