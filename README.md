@@ -5,7 +5,7 @@
 
 YSU is an experimental\* library to manage asynchronous state in React. It stands for yield sequential updates, which describes the process of **streaming updates to components from generators.**
 
-<sup>*no test coverage and not yet used in production, please use with caution.</sup>
+<sup>*minimal test coverage and not yet used in production, please use with caution.</sup>
 
 <img src="./assets/undo-demo.gif" alt="GIF demonstrating undo after submitting a form" width="100%" />
 
@@ -34,7 +34,7 @@ const RandomQuote = props => {
 
   useEffect(() => {
     getQuote();
-  }, [getQuote]);
+  }, []);
 
   return (
     <>
@@ -80,7 +80,7 @@ The examples can be viewed locally by cloning the repository and running `npm in
 
 <img src="./assets/dev-tools.png" alt="Screenshot of the DevTools panel" />
 
-**Baked in logger**
+**Baked-in logger**
 
 <img src="./assets/logger.png" alt="Screenshot of the console logger" />
 
@@ -238,21 +238,7 @@ Returns a Promise.
 
 ## Todos / Ideas
 
-Tests.
-
 Only include devTools and logger in development bundles.
-
-Add spinner/loading bar to devTools to indicate when sequence is running. **Status:** DONE
-
-Show errors in devTools (i.e anything that passes through `logError`). **Status:** DONE
-
-Visual cue in devTools when sequence has been programmatically suspended. **Status:** DONE
-
-Ability to suspend/restart sequence from devTools. **Status:** suspend DONE, restart wasn't very useful
-
-Rename history to devTools **Status:** DONE
-
-Use same colours in logger as used in devTools. **Status:** DONE
 
 Expose back/forward functions for UIs with undo/redo:
 
@@ -277,16 +263,32 @@ Automatically suspend a running sequence when new sequence is initiated.
 
 Investigate how YSU would integrate with React suspense and concurrent mode.
 
-Only publish library code to npm. **Status:** DONE
-
 In-built cache and sequence deduplication.
 
 Hooks alternative to higher-order component API:
 
 ```js
-const [quote, getQuote, goodies] = useYsu(randomQuoteSequence);
+const [quote, getQuote, goodies] = useYSU(randomQuoteSequence);
 
-// with unique key for in-built cache: `useYsu('key', randomQuoteSequence)`
+// with unique key for in-built cache: `useYSU('key', randomQuoteSequence)`
 ```
 
 Move devTools and logger out into separate package `@ysu/devtools`.
+
+## Changelog
+
+### `0.0.0-alpha` → `0.0.0-beta`
+
+- Test coverage
+- Visual cue in devTools when sequence is running
+- Visual cue in devTools when sequence has been suspended
+- Include errors in devTools
+- Ability to suspend sequence from devTools
+- Consistent colours in logger and devTools
+- Only publish library code to npm
+- Rename history to devTools
+- Fix unmount memory leak
+
+## License
+
+MIT
