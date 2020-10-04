@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import { sequence, update, useSequence } from "../lib";
+import { sequence, update } from "../lib";
 
 // sequence --
 function* timeTravelSequence() {
@@ -10,39 +10,21 @@ function* timeTravelSequence() {
 }
 
 // component --
-const TimeTravel = ({ status, devTools }) => (
-  <>
-    <p data-qa="result">{status}</p>
-    {devTools}
-  </>
-);
-
-// hoc --
-const TimeTravelHoc = (props) => {
-  const [{ status }, start, { devTools }] = props.timeTravelHoc;
+const TimeTravel = (props) => {
+  const [{ status }, start, { devTools }] = props.timeTravel;
 
   useEffect(() => {
     start();
   }, []);
 
-  return <TimeTravel status={status} devTools={devTools} />;
-};
-
-// hook --
-const TimeTravelHook = () => {
-  const [{ status }, start, { devTools }] = useSequence(
-    "timeTravelHook",
-    timeTravelSequence
+  return (
+    <>
+      <p data-qa="result">{status}</p>
+      {devTools}
+    </>
   );
-
-  useEffect(() => {
-    start();
-  }, []);
-
-  return <TimeTravel status={status} devTools={devTools} />;
 };
 
-export default {
-  Hoc: sequence({ timeTravelHoc: timeTravelSequence })(TimeTravelHoc),
-  Hook: TimeTravelHook,
-};
+export default sequence({
+  timeTravel: timeTravelSequence,
+})(TimeTravel);

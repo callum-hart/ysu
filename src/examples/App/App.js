@@ -42,15 +42,9 @@ const urls = {
   debounce: "/debounce",
   composition: "/composition",
   qa: {
-    timeTravel: {
-      hoc: "/qa/time-travel/hoc",
-      hook: "/qa/time-travel/hook",
-    },
+    timeTravel: "/qa/time-travel",
     validation: "/qa/validation",
-    suspend: {
-      hoc: "/qa/suspend/hoc",
-      hook: "/qa/suspend/hook",
-    },
+    suspend: "/qa/suspend",
     usability: "/qa/usability",
   },
 };
@@ -140,20 +134,14 @@ function App() {
 
                 {/* QA -- */}
 
-                <Route path={urls.qa.timeTravel.hoc}>
-                  <TimeTravel.Hoc />
-                </Route>
-                <Route path={urls.qa.timeTravel.hook}>
-                  <TimeTravel.Hook />
+                <Route path={urls.qa.timeTravel}>
+                  <TimeTravel />
                 </Route>
                 <Route path={urls.qa.validation}>
                   <Validation />
                 </Route>
-                <Route path={urls.qa.suspend.hoc}>
-                  <Suspend.Hoc />
-                </Route>
-                <Route path={urls.qa.suspend.hook}>
-                  <Suspend.Hook />
+                <Route path={urls.qa.suspend}>
+                  <Suspend />
                 </Route>
                 <Route path={urls.qa.usability}>
                   <Usability />

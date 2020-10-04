@@ -15,7 +15,7 @@ export const Validation = (props) => {
 
   useEffect(() => {
     start();
-  }, [start]);
+  }, []);
 
   return (
     <>
