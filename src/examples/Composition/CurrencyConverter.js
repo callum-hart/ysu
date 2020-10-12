@@ -74,7 +74,7 @@ export const CurrencyConverter = (props) => {
 
   useEffect(() => {
     transition("LOAD_RATES");
-  }, [transition]);
+  }, []);
 
   return (
     <>

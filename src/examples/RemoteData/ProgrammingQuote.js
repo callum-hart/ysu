@@ -14,7 +14,7 @@ export const ProgrammingQuote = (props) => {
 
   useEffect(() => {
     getQuote();
-  }, [getQuote]);
+  }, []);
 
   return (
     <>

@@ -29,7 +29,7 @@ export const InternationalSpaceStation = (props) => {
 
   useEffect(() => {
     getLocation();
-  }, [getLocation]);
+  }, []);
 
   if (status === "FAILED") {
     return (

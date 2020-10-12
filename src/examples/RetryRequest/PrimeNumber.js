@@ -14,7 +14,7 @@ export const PrimeNumber = (props) => {
 
   useEffect(() => {
     getNumber();
-  }, [getNumber]);
+  }, []);
 
   return (
     <>

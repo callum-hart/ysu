@@ -111,7 +111,7 @@ export const StockBidder = (props) => {
 
   useEffect(() => {
     transition();
-  }, [transition]);
+  }, []);
 
   return (
     <>

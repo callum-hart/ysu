@@ -21,7 +21,7 @@ export const LaunchCompare = (props) => {
 
   useEffect(() => {
     getNextLaunch();
-  }, [getNextLaunch]);
+  }, []);
 
   return (
     <>

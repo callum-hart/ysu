@@ -14,7 +14,7 @@ export const RandomPhoto = (props) => {
 
   useEffect(() => {
     getPhoto();
-  }, [getPhoto]);
+  }, []);
 
   return (
     <>

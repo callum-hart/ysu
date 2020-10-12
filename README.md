@@ -280,8 +280,9 @@ Move devTools and logger out into separate package `@ysu/devtools`.
 ### `0.0.0-alpha` → `0.0.0-beta`
 
 - Test coverage
-- Visual cue in devTools when sequence is running
-- Visual cue in devTools when sequence has been suspended
+- Visual cues in devTools when sequence:
+  - is running
+  - has been suspended
 - Include errors in devTools
 - Ability to suspend sequence from devTools
 - Consistent colours in logger and devTools
