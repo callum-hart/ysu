@@ -62,17 +62,17 @@ The `randomQuote` sequence starts when the component mounts, or when the user cl
 
 ## Examples
 
-- [Remote Data Fetching](https://github.com/callum-hart/ysu/tree/master/src/examples/RemoteData) Similar to the basic example above.
-- [Polling](https://github.com/callum-hart/ysu/tree/master/src/examples/Polling) Endpoint is polled every N seconds, where the user can change the frequency of, or pause and resume polling.
-- [Retry Request](https://github.com/callum-hart/ysu/tree/master/src/examples/RetryRequest) Retries an XHR request until a certain condition is met, or number of retries exceeds 5 attempts.
-- [Aggregation](https://github.com/callum-hart/ysu/tree/master/src/examples/Aggregation) Render data from multiple endpoints only when all datasets are ready.
-- [Race](https://github.com/callum-hart/ysu/tree/master/src/examples/Race) Time constraign a request to 2 seconds so that the UI isn't blocked on slow internet connections.
-- [User Journey](https://github.com/callum-hart/ysu/tree/master/src/examples/UserJourney) Form in which the user has 5 seconds to either confirm or cancel submission.
-- [Undo](https://github.com/callum-hart/ysu/tree/master/src/examples/Undo) After submitting a form the user can change their mind by clicking undo.
-- [Debounce](https://github.com/callum-hart/ysu/tree/master/src/examples/Debounce) Run a remote search query once the user has stopped typing for 2 seconds.
-- [Composition](https://github.com/callum-hart/ysu/tree/master/src/examples/Composition) Compose a sequence from multiple generators.
+The examples can be viewed [online](https://ysu.netlify.app/), or alternatively can be run locally by cloning the repository and running `npm install` and then `npm start`.
 
-The examples can be viewed locally by cloning the repository and running `npm install` and then `npm start`.
+- **Remote Data Fetching** Similar to the basic example above ([demo](https://ysu.netlify.app/remote-data) | [code](https://github.com/callum-hart/ysu/tree/master/src/examples/RemoteData)).
+- **Polling** Endpoint is polled every N seconds, where the user can change the frequency of, or pause and resume polling ([demo](https://ysu.netlify.app/polling) | [code](https://github.com/callum-hart/ysu/tree/master/src/examples/Polling)).
+- **Retry Request** Retries an XHR request until a certain condition is met, or number of retries exceeds 5 attempts ([demo](https://ysu.netlify.app/retry-request) | [code](https://github.com/callum-hart/ysu/tree/master/src/examples/RetryRequest)).
+- **Aggregation** Render data from multiple endpoints only when all datasets are ready ([demo](https://ysu.netlify.app/aggregation) | [code](https://github.com/callum-hart/ysu/tree/master/src/examples/Aggregation)).
+- **Race** Time constraign a request to 2 seconds so that the UI isn't blocked on slow internet connections ([demo](https://ysu.netlify.app/race) | [code](https://github.com/callum-hart/ysu/tree/master/src/examples/Race)).
+- **User Journey** Form in which the user has 5 seconds to either confirm or cancel submission ([demo](https://ysu.netlify.app/user-journey) | [code](https://github.com/callum-hart/ysu/tree/master/src/examples/UserJourney)).
+- **Undo** After submitting a form the user can change their mind by clicking undo ([demo](https://ysu.netlify.app/undo) | [code](https://github.com/callum-hart/ysu/tree/master/src/examples/Undo)).
+- **Debounce** Run a remote search query once the user has stopped typing for 2 seconds ([demo](https://ysu.netlify.app/debounce) | [code](https://github.com/callum-hart/ysu/tree/master/src/examples/Debounce)).
+- **Composition** Compose a sequence from multiple generators ([demo](https://ysu.netlify.app/composition) | [code](https://github.com/callum-hart/ysu/tree/master/src/examples/Composition)).
 
 ## Features
 
