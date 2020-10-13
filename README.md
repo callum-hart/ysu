@@ -7,7 +7,7 @@ YSU is an experimental\* library to manage asynchronous state in React. It stand
 
 <sup>*minimal test coverage and not yet used in production, please use with caution.</sup>
 
-<img src="./assets/undo-demo.gif" alt="GIF demonstrating undo after submitting a form" width="100%" />
+<img src="https://raw.githubusercontent.com/callum-hart/ysu/master/assets/undo-demo.gif" alt="GIF demonstrating undo after submitting a form" width="100%" />
 
 ## Basic Example
 
@@ -78,11 +78,11 @@ The examples can be viewed [online](https://ysu.netlify.app/), or alternatively 
 
 **DevTools with time travel 🚀**
 
-<img src="./assets/dev-tools.png" alt="Screenshot of the DevTools panel" />
+<img src="https://raw.githubusercontent.com/callum-hart/ysu/master/assets/dev-tools.png" alt="Screenshot of the DevTools panel" />
 
 **Baked-in logger**
 
-<img src="./assets/logger.png" alt="Screenshot of the console logger" />
+<img src="https://raw.githubusercontent.com/callum-hart/ysu/master/assets/logger.png" alt="Screenshot of the console logger" />
 
 **Middleware support**
 
@@ -279,16 +279,16 @@ Move devTools and logger out into separate package `@ysu/devtools`.
 
 ### `0.0.0-alpha` → `0.0.0-beta`
 
-- Test coverage
+- Test coverage 🧪
 - Visual cues in devTools when sequence:
-  - is running
-  - has been suspended
-- Include errors in devTools
-- Ability to suspend sequence from devTools
-- Consistent colours in logger and devTools
-- Only publish library code to npm
-- Rename history to devTools
-- Fix unmount memory leak
+  - is running 🏃🏻‍♂️
+  - has been suspended ⏸
+- Include errors in devTools ⚠️
+- Ability to suspend sequence from devTools 🛠
+- Consistent colours in logger and devTools 💅
+- Only publish library code to npm 🚢
+- Rename history to devTools 🤓
+- Fix unmount memory leak 💦
 
 ## License
 
