@@ -17,11 +17,11 @@ import { nextLaunchSequence } from "./sequence";
 // (only want to render data when both datasets are present)
 
 export const LaunchCompare = (props) => {
-  const [{ status, payload }, getNextLaunch, { history }] = props.nextLaunch;
+  const [{ status, payload }, getNextLaunch, { devTools }] = props.nextLaunch;
 
   useEffect(() => {
     getNextLaunch();
-  }, [getNextLaunch]);
+  }, []);
 
   return (
     <>
@@ -87,7 +87,7 @@ export const LaunchCompare = (props) => {
         </>
       )}
 
-      {props.showYsuHistory && <>{history}</>}
+      {props.showDevTools && <>{devTools}</>}
     </>
   );
 };

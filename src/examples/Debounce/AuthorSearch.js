@@ -20,7 +20,7 @@ export const AuthorSearch = (props) => {
   const [
     { status, payload },
     getBooksByAuthor,
-    { history, suspend },
+    { devTools, suspend },
   ] = props.booksByAuthor;
 
   return (
@@ -86,7 +86,7 @@ export const AuthorSearch = (props) => {
         />
       )}
 
-      {props.showYsuHistory && <>{history}</>}
+      {props.showDevTools && <>{devTools}</>}
     </>
   );
 };

@@ -22,14 +22,14 @@ export const InternationalSpaceStation = (props) => {
   const [
     { status, payload },
     getLocation,
-    { history, suspend },
+    { devTools, suspend },
   ] = props.issLocation;
   const [frequency, setFrequency] = useState(2000);
   const [control, setControl] = useState("start");
 
   useEffect(() => {
     getLocation();
-  }, [getLocation]);
+  }, []);
 
   if (status === "FAILED") {
     return (
@@ -123,7 +123,7 @@ export const InternationalSpaceStation = (props) => {
         </FormGroup>
       </Form>
 
-      {props.showYsuHistory && <>{history}</>}
+      {props.showDevTools && <>{devTools}</>}
     </>
   );
 };

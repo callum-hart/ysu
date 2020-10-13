@@ -26,6 +26,10 @@ import StockBidder from "../UserJourney/StockBidder";
 import AccountSettings from "../Undo/AccountSettings";
 import AuthorSearch from "../Debounce/AuthorSearch";
 import CurrencyConverter from "../Composition/CurrencyConverter";
+import TimeTravel from "../../qa/TimeTravel";
+import Validation from "../../qa/Validation";
+import Suspend from "../../qa/Suspend";
+import Usability from "../../qa/Usability";
 
 const urls = {
   remoteData: "/remote-data",
@@ -37,10 +41,16 @@ const urls = {
   undo: "/undo",
   debounce: "/debounce",
   composition: "/composition",
+  qa: {
+    timeTravel: "/qa/time-travel",
+    validation: "/qa/validation",
+    suspend: "/qa/suspend",
+    usability: "/qa/usability",
+  },
 };
 
 function App() {
-  const [showYsuHistory, toggleYsuHistory] = useState(false);
+  const [showDevTools, toggleDevTools] = useState(false);
 
   return (
     <Router>
@@ -81,11 +91,11 @@ function App() {
         </SideNavItems>
 
         <Toggle
-          id="toggle-ysu-history"
-          className="toggle-ysu-history"
-          labelA="History"
-          labelB="History"
-          onChange={() => toggleYsuHistory(!showYsuHistory)}
+          id="toggle-dev-tools"
+          className="toggle-dev-tools"
+          labelA="DevTools"
+          labelB="DevTools"
+          onChange={() => toggleDevTools(!showDevTools)}
         />
       </SideNav>
 
@@ -95,34 +105,46 @@ function App() {
             <Column>
               <Switch>
                 <Route path={urls.remoteData}>
-                  <ProgrammingQuote showYsuHistory={showYsuHistory} />
+                  <ProgrammingQuote showDevTools={showDevTools} />
                 </Route>
                 <Route path={urls.polling}>
-                  <InternationalSpaceStation showYsuHistory={showYsuHistory} />
+                  <InternationalSpaceStation showDevTools={showDevTools} />
                 </Route>
                 <Route path={urls.retryRequest}>
-                  <PrimeNumber showYsuHistory={showYsuHistory} />
+                  <PrimeNumber showDevTools={showDevTools} />
                 </Route>
                 <Route path={urls.aggregation}>
-                  <LaunchCompare showYsuHistory={showYsuHistory} />
+                  <LaunchCompare showDevTools={showDevTools} />
                 </Route>
                 <Route path={urls.race}>
-                  <RandomPhoto showYsuHistory={showYsuHistory} />
+                  <RandomPhoto showDevTools={showDevTools} />
                 </Route>
                 <Route path={urls.userJourney}>
-                  <StockBidder showYsuHistory={showYsuHistory} />
+                  <StockBidder showDevTools={showDevTools} />
                 </Route>
                 <Route path={urls.undo}>
-                  <AccountSettings showYsuHistory={showYsuHistory} />
+                  <AccountSettings showDevTools={showDevTools} />
                 </Route>
                 <Route path={urls.debounce}>
-                  <AuthorSearch showYsuHistory={showYsuHistory} />
+                  <AuthorSearch showDevTools={showDevTools} />
                 </Route>
                 <Route path={urls.composition}>
-                  <CurrencyConverter showYsuHistory={showYsuHistory} />
+                  <CurrencyConverter showDevTools={showDevTools} />
                 </Route>
-                <Route path="/">
-                  <ProgrammingQuote showYsuHistory={showYsuHistory} />
+
+                {/* QA -- */}
+
+                <Route path={urls.qa.timeTravel}>
+                  <TimeTravel />
+                </Route>
+                <Route path={urls.qa.validation}>
+                  <Validation />
+                </Route>
+                <Route path={urls.qa.suspend}>
+                  <Suspend />
+                </Route>
+                <Route path={urls.qa.usability}>
+                  <Usability />
                 </Route>
               </Switch>
             </Column>

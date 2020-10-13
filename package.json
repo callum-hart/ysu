@@ -4,6 +4,10 @@
   "description": "Stream updates to React components from ES6 generators",
   "main": "dist/ysu.cjs.js",
   "module": "dist/ysu.esm.js",
+  "files": [
+    "/dist",
+    "README.md"
+  ],
   "dependencies": {
     "classnames": "2.2.6",
     "react-rnd": "10.1.10"
@@ -15,6 +19,7 @@
     "carbon-components": "10.12.0",
     "carbon-components-react": "7.12.0",
     "carbon-icons": "7.0.7",
+    "cypress": "^5.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "5.2.0",
@@ -34,7 +39,8 @@
     "build": "react-scripts build",
     "build:lib": "rollup -c",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "cypress:open": "cypress open"
   },
   "eslintConfig": {
     "extends": "react-app"

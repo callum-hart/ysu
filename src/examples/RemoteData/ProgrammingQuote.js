@@ -10,11 +10,11 @@ import { sequence } from "../../lib";
 import { programmingQuoteSequence } from "./sequence";
 
 export const ProgrammingQuote = (props) => {
-  const [{ status, payload }, getQuote, { history }] = props.programmingQuote;
+  const [{ status, payload }, getQuote, { devTools }] = props.programmingQuote;
 
   useEffect(() => {
     getQuote();
-  }, [getQuote]);
+  }, []);
 
   return (
     <>
@@ -48,7 +48,7 @@ export const ProgrammingQuote = (props) => {
         </>
       )}
 
-      {props.showYsuHistory && <>{history}</>}
+      {props.showDevTools && <>{devTools}</>}
     </>
   );
 };

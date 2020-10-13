@@ -3,11 +3,11 @@
 
 ## Introduction
 
-YSU is an experimental library to manage asynchronous state in React.
+YSU is an experimental\* library to manage asynchronous state in React. It stands for yield sequential updates, which describes the process of **streaming updates to components from generators.**
 
-It stands for yield sequential updates, which describes the process of **streaming updates to components from generators.**
+<sup>*minimal test coverage and not yet used in production, please use with caution.</sup>
 
-<img src="./ysu-demo.gif" alt="YSU video demo of remote data fetching" width="100%" />
+<img src="./assets/undo-demo.gif" alt="GIF demonstrating undo after submitting a form" width="100%" />
 
 ## Basic Example
 
@@ -34,7 +34,7 @@ const RandomQuote = props => {
 
   useEffect(() => {
     getQuote();
-  }, [getQuote]);
+  }, []);
 
   return (
     <>
@@ -51,7 +51,7 @@ export default sequence({
 })(RandomQuote);
 ```
 
-The component is connected to the generator using the `sequence` higher-order component. When(ever) the generator yields an `update` the component (re)renders.
+The component is connected to the generator using the `sequence` higher-order component. **When(ever) the generator yields an `update` the component (re)renders.**
 
 Each field passed to `sequence` is mapped to a prop which contains a pair. In this example the prop `randomQuote` holds the pair:
 
@@ -62,29 +62,37 @@ The `randomQuote` sequence starts when the component mounts, or when the user cl
 
 ## Examples
 
-- [Remote Data Fetching](https://github.com/callum-hart/ysu/tree/master/src/examples/RemoteData) Similar to the basic example above.
-- [Polling](https://github.com/callum-hart/ysu/tree/master/src/examples/Polling) Endpoint is polled every N seconds, where the user can change the frequency of, or pause and resume polling.
-- [Retry Request](https://github.com/callum-hart/ysu/tree/master/src/examples/RetryRequest) Retries an XHR request until a certain condition is met, or number of retries exceeds 5 attempts.
-- [Aggregation](https://github.com/callum-hart/ysu/tree/master/src/examples/Aggregation) Render data from multiple endpoints only when all datasets are ready.
-- [Race](https://github.com/callum-hart/ysu/tree/master/src/examples/Race) Time constraign a request to 2 seconds so that the UI isn't blocked on slow internet connections.
-- [User Journey](https://github.com/callum-hart/ysu/tree/master/src/examples/UserJourney) Form in which the user has 5 seconds to either confirm or cancel submission.
-- [Undo](https://github.com/callum-hart/ysu/tree/master/src/examples/Undo) After submitting a form the user can change their mind by clicking undo.
-- [Debounce](https://github.com/callum-hart/ysu/tree/master/src/examples/Debounce) Run a remote search query once the user has stopped typing for 1 second.
-- [Composition](https://github.com/callum-hart/ysu/tree/master/src/examples/Composition) Compose a sequence from multiple generators.
+The examples can be viewed [online](https://ysu.netlify.app/), or alternatively can be run locally by cloning the repository and running `npm install` and then `npm start`.
 
-The examples can be viewed locally by cloning the repository and running `npm install` and then `npm start`.
+- **Remote Data Fetching** Similar to the basic example above ([demo](https://ysu.netlify.app/remote-data) | [code](https://github.com/callum-hart/ysu/tree/master/src/examples/RemoteData)).
+- **Polling** Endpoint is polled every N seconds, where the user can change the frequency of, or pause and resume polling ([demo](https://ysu.netlify.app/polling) | [code](https://github.com/callum-hart/ysu/tree/master/src/examples/Polling)).
+- **Retry Request** Retries an XHR request until a certain condition is met, or number of retries exceeds 5 attempts ([demo](https://ysu.netlify.app/retry-request) | [code](https://github.com/callum-hart/ysu/tree/master/src/examples/RetryRequest)).
+- **Aggregation** Render data from multiple endpoints only when all datasets are ready ([demo](https://ysu.netlify.app/aggregation) | [code](https://github.com/callum-hart/ysu/tree/master/src/examples/Aggregation)).
+- **Race** Time constraign a request to 2 seconds so that the UI isn't blocked on slow internet connections ([demo](https://ysu.netlify.app/race) | [code](https://github.com/callum-hart/ysu/tree/master/src/examples/Race)).
+- **User Journey** Form in which the user has 5 seconds to either confirm or cancel submission ([demo](https://ysu.netlify.app/user-journey) | [code](https://github.com/callum-hart/ysu/tree/master/src/examples/UserJourney)).
+- **Undo** After submitting a form the user can change their mind by clicking undo ([demo](https://ysu.netlify.app/undo) | [code](https://github.com/callum-hart/ysu/tree/master/src/examples/Undo)).
+- **Debounce** Run a remote search query once the user has stopped typing for 2 seconds ([demo](https://ysu.netlify.app/debounce) | [code](https://github.com/callum-hart/ysu/tree/master/src/examples/Debounce)).
+- **Composition** Compose a sequence from multiple generators ([demo](https://ysu.netlify.app/composition) | [code](https://github.com/callum-hart/ysu/tree/master/src/examples/Composition)).
 
 ## Features
 
-- Debugger with time travel 🚀
-- Baked in logger
-- Middleware support
+**DevTools with time travel 🚀**
+
+<img src="./assets/dev-tools.png" alt="Screenshot of the DevTools panel" />
+
+**Baked-in logger**
+
+<img src="./assets/logger.png" alt="Screenshot of the console logger" />
+
+**Middleware support**
+
+Subscribe to a stream of updates for third-party interactions such as logging and error reporting.
 
 ## Overview
 
 Much of what makes UI programming difficult is managing values that change over time. If we take the sterotypical async example of making an API request, the UI reflects a sequence of state changes.
 
-The state starts off **idle** → then goes to \***loading** → then finishes with \*\***success** or **failed**.
+The state starts off **idle** → then goes to **loading**\* → then finishes with **success** or **failed**\*\*.
 
 <sup>*usually triggered on component mount / user interaction. **depending on the API response.</sup>
 
@@ -106,9 +114,9 @@ The API request can be represented using a sequence diagram:
 
 You may have noticed this sequence diagram depicts exactly what is happening in the basic example shown earlier.
 
-Since yielding from a generator triggers a (re)render in the UI – and generators can generate values forever – implementing infinite and finite sequences such as polling or retries is trivial.
+Since yielding from a generator triggers a (re)render in the UI, and generators can generate values forever, implementing infinite and finite sequences such as polling or retries is trivial.
 
-Polling is as simple as calling an endpoint and yielding an update to the UI from within an [infinite loop](https://github.com/callum-hart/ysu/blob/master/src/examples/Polling/sequence.js#L8). Whilst retrying an XHR request does the same but within a [finite loop](https://github.com/callum-hart/ysu/blob/master/src/examples/RetryRequest/sequence.js#L18).
+Polling is as simple as calling an endpoint and yielding an update to the UI within an [infinite loop](https://github.com/callum-hart/ysu/blob/master/src/examples/Polling/sequence.js#L8). Whilst retrying an XHR request does the same but from within a [finite loop](https://github.com/callum-hart/ysu/blob/master/src/examples/RetryRequest/sequence.js#L18).
 
 Note: on component unmount any running sequences are stopped and scheduled updates cancelled automatically. This ensures that infinite sequences (such as polling) only run when the component is mounted.
 
@@ -120,7 +128,7 @@ Note: on component unmount any running sequences are stopped and scheduled updat
 - Same API for function and class components
 - Predictable rendering (1 yield equals 1 render)
 - Simple mental model (components just recieve props)
-- Use [status enums](https://kentcdodds.com/blog/stop-using-isloading-booleans)
+- Baked-in [status enums](https://kentcdodds.com/blog/stop-using-isloading-booleans)
 - Decorator approach popularised by Redux
 - Pair approach popularised by hooks
 
@@ -163,7 +171,7 @@ const [value, initiator, goodies] = props.foo;
     - `payload?` Any: data associated with the current status (i.e: `{ userName: "@chart" }`)
 1. `initiator` Function: that starts the sequence
 2. `goodies` Object containing:
-    - `history` Component: that renders the history of the sequence (used during development like devtools). Note: the history is transient and destroyed when the component unmounts.
+    - `devTools` Component: that renders the history of the sequence. Note: the history is transient and destroyed when the component unmounts.
     - `suspend` Function: that stops the sequence and cancels any scheduled updates (i.e: click button to stop polling)
 
 #### `middleware`
@@ -230,17 +238,7 @@ Returns a Promise.
 
 ## Todos / Ideas
 
-Tests.
-
-Only include history and logger in development bundles.
-
-Add spinner/loading bar to history to indicate when sequence is running.
-
-Show errors in history (i.e anything that passes through `logError`).
-
-Visual cue in history when sequence has been programmatically suspended.
-
-Ability to suspend/restart sequence from history.
+Only include devTools and logger in development bundles.
 
 Expose back/forward functions for UIs with undo/redo:
 
@@ -265,4 +263,33 @@ Automatically suspend a running sequence when new sequence is initiated.
 
 Investigate how YSU would integrate with React suspense and concurrent mode.
 
-Only publish library code to npm.
+In-built cache and sequence deduplication.
+
+Hooks alternative to higher-order component API:
+
+```js
+const [quote, getQuote, goodies] = useYSU(randomQuoteSequence);
+
+// with unique key for in-built cache: `useYSU('key', randomQuoteSequence)`
+```
+
+Move devTools and logger out into separate package `@ysu/devtools`.
+
+## Changelog
+
+### `0.0.0-alpha` → `0.0.0-beta`
+
+- Test coverage
+- Visual cues in devTools when sequence:
+  - is running
+  - has been suspended
+- Include errors in devTools
+- Ability to suspend sequence from devTools
+- Consistent colours in logger and devTools
+- Only publish library code to npm
+- Rename history to devTools
+- Fix unmount memory leak
+
+## License
+
+MIT

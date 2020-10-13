@@ -1,9 +1,9 @@
 function logUpdate(id, { status, payload }, timestamp) {
-  console.group(`${id} %c@ ${timestamp}`, "color: grey;");
-  console.log(` status: %c${status}`, "color: green;");
+  console.group(`${id} %c@ ${timestamp}`, "color: #7f8188;");
+  console.log(`status: %c${status}`, "font-weight: bold;");
 
   if (payload) {
-    console.log(" payload: ", payload);
+    console.log("payload: ", payload);
   }
 
   console.groupEnd();
@@ -11,14 +11,13 @@ function logUpdate(id, { status, payload }, timestamp) {
 
 function logSuspended(id) {
   console.group(id);
-  console.log(" suspended");
+  console.log("🛑 Sequence suspended");
   console.groupEnd();
 }
 
-function logError(id, val, timestamp) {
-  console.group(`${id} %c@ ${timestamp}`, "color: red;");
-  console.log(" error: ", "Sequence yielded a value without a `status` field");
-  console.log(" received: ", val);
+function logError(id, errorMessage, timestamp) {
+  console.group(`${id} %c@ ${timestamp}`, "color: #7f8188;");
+  console.log(`%c${errorMessage}`, "color: #eb6a6c;");
   console.groupEnd();
 }
 

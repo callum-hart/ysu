@@ -1,11 +1,11 @@
 async function getIssLocation() {
-  const res = await fetch("http://api.open-notify.org/iss-now.json");
-  const { timestamp, iss_position } = await res.json();
+  const res = await fetch("https://api.wheretheiss.at/v1/satellites/25544");
+  const { timestamp, latitude, longitude } = await res.json();
 
   return {
     timestamp,
-    lat: iss_position.latitude,
-    long: iss_position.longitude
+    lat: latitude,
+    long: longitude
   };
 }
 
