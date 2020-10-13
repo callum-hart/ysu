@@ -2,6 +2,10 @@
   "name": "ysu",
   "version": "0.0.0-alpha",
   "description": "Stream updates to React components from ES6 generators",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/callum-hart/ysu.git"
+  },
   "main": "dist/ysu.cjs.js",
   "module": "dist/ysu.esm.js",
   "files": [
