@@ -277,7 +277,7 @@ Move devTools and logger out into separate package `@ysu/devtools`.
 
 ## Changelog
 
-### `0.0.0-alpha` → `0.0.0-beta`
+### `0.0.0-alpha` → `0.1.0-beta`
 
 - Test coverage 🧪
 - Visual cues in devTools when sequence:
