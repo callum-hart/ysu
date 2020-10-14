@@ -6,6 +6,7 @@
     "type": "git",
     "url": "https://github.com/callum-hart/ysu.git"
   },
+  "license": "MIT",
   "main": "dist/ysu.cjs.js",
   "module": "dist/ysu.esm.js",
   "files": [
